@@ -135,6 +135,202 @@ final %>%
   )
 
 
+# Vegetable readings across all farms -------------------------------------
+
+#Sample vegetable
+#strands locations
+#utcome: inhibition
+
+veg<- microbiology |> 
+  filter(item=="Amaranthus") 
+
+#I want to do anova 
+# Two way ANOVA
+model <- aov(inhibition ~ farm, data = veg)
+#tidy anova results
+anova_results <- tidy(model)
+
+format_p_value <- function(p) {
+  if (is.na(p)) {
+    return("NA")  # Handle NA values gracefully
+  } else if (p < 0.001) {
+    return("< 0.001 ***")
+  } else if (p < 0.01) {
+    return(paste0(round(p, 3), " **"))
+  } else if (p < 0.05) {
+    return(paste0(round(p, 3), " *"))
+  } else {
+    return(round(p, 3))
+  }
+}
+
+anova_table <- anova_results %>%
+  mutate(p.value = sapply(p.value, format_p_value)) %>%  # Format p-values
+  gt() %>%
+  tab_header(
+    title = "Test Results"
+  ) %>%
+  cols_label(
+    term = "Source of Variation",
+    df = "Degrees of Freedom",
+    statistic = "F-Statistic",
+    p.value = "P-Value"
+  ) %>%
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05",
+    locations = cells_column_labels(columns = p.value)  # Specify where to place the footnote
+  )
+
+# Display the table
+print(anova_table)
+
+
+# Chicken Manure readings across all farms -------------------------------------
+
+#Chicken manure
+#strands locations
+#outcome: inhibition
+
+Chicken_manure<- microbiology |> 
+  filter(item=="Chicken Manure") 
+
+#I want to do anova 
+# Two way ANOVA
+model <- aov(inhibition ~ farm, data = Chicken_manure)
+#tidy anova results
+anova_results <- tidy(model)
+
+format_p_value <- function(p) {
+  if (is.na(p)) {
+    return("NA")  # Handle NA values gracefully
+  } else if (p < 0.001) {
+    return("< 0.001 ***")
+  } else if (p < 0.01) {
+    return(paste0(round(p, 3), " **"))
+  } else if (p < 0.05) {
+    return(paste0(round(p, 3), " *"))
+  } else {
+    return(round(p, 3))
+  }
+}
+
+anova_table <- anova_results %>%
+  mutate(p.value = sapply(p.value, format_p_value)) %>%  # Format p-values
+  gt() %>%
+  tab_header(
+    title = "Test Results"
+  ) %>%
+  cols_label(
+    term = "Source of Variation",
+    df = "Degrees of Freedom",
+    statistic = "F-Statistic",
+    p.value = "P-Value"
+  ) %>%
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05",
+    locations = cells_column_labels(columns = p.value)  # Specify where to place the footnote
+  )
+
+# Display the table
+print(anova_table)
+
+
+# Home Soil readings across all farms -------------------------------------
+
+#Home Soil
+#strands locations
+#outcome: inhibition
+
+Home_soil<- microbiology |> 
+  filter(item=="Home soil") 
+
+#I want to do anova 
+# Two way ANOVA
+model <- aov(inhibition ~ farm, data = Home_soil)
+#tidy anova results
+anova_results <- tidy(model)
+
+format_p_value <- function(p) {
+  if (is.na(p)) {
+    return("NA")  # Handle NA values gracefully
+  } else if (p < 0.001) {
+    return("< 0.001 ***")
+  } else if (p < 0.01) {
+    return(paste0(round(p, 3), " **"))
+  } else if (p < 0.05) {
+    return(paste0(round(p, 3), " *"))
+  } else {
+    return(round(p, 3))
+  }
+}
+
+anova_table <- anova_results %>%
+  mutate(p.value = sapply(p.value, format_p_value)) %>%  # Format p-values
+  gt() %>%
+  tab_header(
+    title = "Test Results"
+  ) %>%
+  cols_label(
+    term = "Source of Variation",
+    df = "Degrees of Freedom",
+    statistic = "F-Statistic",
+    p.value = "P-Value"
+  ) %>%
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05",
+    locations = cells_column_labels(columns = p.value)  # Specify where to place the footnote
+  )
+
+# Display the table
+print(anova_table)
+
+# Overall readings across all farms -------------------------------------
+
+#Home Soil
+#strands locations
+#outcome: inhibition
+
+
+#I want to do anova 
+# Two way ANOVA
+model <- aov(inhibition ~ item*farm, data = microbiology)
+#tidy anova results
+anova_results <- tidy(model)
+
+format_p_value <- function(p) {
+  if (is.na(p)) {
+    return("NA")  # Handle NA values gracefully
+  } else if (p < 0.001) {
+    return("< 0.001 ***")
+  } else if (p < 0.01) {
+    return(paste0(round(p, 3), " **"))
+  } else if (p < 0.05) {
+    return(paste0(round(p, 3), " *"))
+  } else {
+    return(round(p, 3))
+  }
+}
+
+anova_table <- anova_results %>%
+  mutate(p.value = sapply(p.value, format_p_value)) %>%  # Format p-values
+  gt() %>%
+  tab_header(
+    title = "Test Results"
+  ) %>%
+  cols_label(
+    term = "Source of Variation",
+    df = "Degrees of Freedom",
+    statistic = "F-Statistic",
+    p.value = "P-Value"
+  ) %>%
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05",
+    locations = cells_column_labels(columns = p.value)  # Specify where to place the footnote
+  )
+
+# Display the table
+print(anova_table)
+
 
 
 
