@@ -135,7 +135,31 @@ final %>%
   tab_footnote(
     footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
     locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
+  )result_table <- as_tibble(tukey_result$`antibiotic`, rownames = "Comparison")
+
+# Step 2: Rename columns for clarity
+result_table <- result_table %>%
+  rename(
+    Difference = diff,
+    Lower_CI = lwr,
+    Upper_CI = upr,
+    Adjusted_p_value = `p adj`
   )
+
+final<-result_table |> 
+  filter(Adjusted_p_value<0.05) 
+
+final %>%
+  mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
+  gt() %>%
+  tab_header(
+    title = "Significant Differences"
+  ) |> 
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
+    locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
+  )
+
 
 
 
