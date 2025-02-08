@@ -22,10 +22,7 @@ microbiology<- read_csv(here::here("data/raw/sorted.csv")) |>
   clean_names() |> 
   mutate_if(is.character, as_factor) |> 
   select(id:microbe)
-#re code factors to new names
-
 microbiology<-microbiology |> 
-  clean_names()
   mutate(
     farm=fct_recode(farm,
                     "farm 1"= "Bangwe",
@@ -40,17 +37,20 @@ microbiology<-microbiology |>
                                 "farm 2",
                                 "farm 3",
                                 "farm 4",
-                                "farm 5")))  
 
 
+# Filter the microbiology dataset for specific microbes
+filtered_data <- microbiology %>%
+  filter(microbe %in% c("E. coli", "Klebsiella pneumoniae"))
 
 
+grouped_counts <- filtered_data %>%
+  group_by(farm, item, microbe) %>%
+  summarize(count = n(), .groups = "drop")
 
-
-#I will start by assessing statistical significnce on the presence of different microbes
 
 # Step 1: Calculate Mean Inhibition and Standard Error
-summary_data <- microbiology |> 
+summary_data <- filtered_data |> 
   group_by(item) |>  # Group by sample type (manure, soil, vegetables)
   summarise(
     mean_inhibition = mean(inhibition, na.rm = TRUE), # Calculate mean inhibition
@@ -82,13 +82,10 @@ line_plot <- ggplot(summary_data, aes(x = item, y = mean_inhibition, group = 1))
 # Display the plot
 print(line_plot)
 
-grouped_counts <- microbiology %>%
-  group_by(farm, item, microbe) %>%
-  summarize(count = n(), .groups = "drop")  # Total counts per group
 
 #I want to do anova 
 # Two way ANOVA
-model <- aov(count ~ farm*item, data = grouped_counts)
+model <- aov(count ~ farm, data = grouped_counts)
 #tidy anova results
 anova_results <- tidy(model)
 
@@ -127,7 +124,7 @@ anova_table <- anova_results %>%
 print(anova_table)
 
 
-anova_table |> gtsave("combinedanova2.docx")
+anova_table |> gtsave("nrrowcombinedanova3.docx")
 
 
 # Step 2: Run Tukey's HSD Test
@@ -541,3 +538,80 @@ colnames(heatmap_matrix) <- colnames(heatmap_data)[-c(1, 2)]
 # Plot the heatmap
 pheatmap(heatmap_matrix, main = "Resistance Heatmap (Separated by Microbe)",
          cluster_rows = TRUE, cluster_cols = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+# Load necessary libraries
+library(dplyr)
+library(gt)
+
+
+# Step 1: Filter the dataset to keep only Resistant cases
+resistant_data <- filtered_data %>%
+  filter(sensitivity == "R") |> 
+  select(microbe, antibiotic, sensitivity)
+
+resistant_data<-resistant_data |> 
+mutate(
+  sensitivity=fct_recode(sensitivity,
+                  "Resistant"= "R",
+                 
+  )
+)
+
+# Step 2: Display the filtered data in a GT table
+resistant_data<-resistant_data %>%
+  gt() %>%
+  tab_header(
+    title = "Resistance Patterns of Microbes to Drugs"
+  ) %>%
+  cols_label(
+    microbe = "Microbe",
+    antibiotic = "Drug",
+    sensitivity = "Resistance Status"
+  ) %>%
+  tab_spanner(
+    label = "Resistance Information",
+    columns = vars(microbe, antibiotic, sensitivity)
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(weight = "bold", color = "white"),
+      cell_fill(color = "red")
+    ),
+    locations = cells_body(columns = vars(sensitivity), rows = sensitivity == "Resistant")
+  ) %>%
+  tab_style(
+    style = list(cell_fill(color = "lightgray")),
+    locations = cells_body(columns = vars(sensitivity), rows = sensitivity != "Resistant")
+  )
+
+resistant_data 
+gtsave("resistant_data.docx")
+
+
+
+# Load necessary libraries
+library(dplyr)
+library(gt)
+
+
+table<-microbiology |> 
+  select(microbe, item) |> 
+  tbl_summary(by = item) |> 
+  as_flex_table() |>
+  save_as_docx(path = "~/4418304/msc-extent-open-burning/summer-study/summer-data/mmmmm.docx")
+
+
+#i want to save as gtsummary table
+
+

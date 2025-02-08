@@ -1,371 +1,371 @@
-id,farm,sample,item,antibiotic,inhibition,sensitivity,microbe,,,,,,
-1,Bangwe,Vegetable, Amaranthus ,SXT,6,R,E. coli,,,,,,
-1,Bangwe,Vegetable, Amaranthus ,CIP,24,I,E. coli,,,,,,
-1,Bangwe,Vegetable, Amaranthus ,TGC,20,S,E. coli,,,,,,
-1,Bangwe,Vegetable, Amaranthus ,CTX,23,S,E. coli,,,,,,
-1,Bangwe,Vegetable, Amaranthus ,AMP,6,R,E. coli,,,,,,
-1,Bangwe,Vegetable, Amaranthus ,GM,6,R,E. coli,,,,,,
-1,Bangwe,Manure,Chicken Manure,SXT,20,S,Acinetobacter junni,,,,,,
-1,Bangwe,Manure,Chicken Manure,CIP,26,I,Acinetobacter junni,,,,,,
-1,Bangwe,Manure,Chicken Manure,GM,20,R,Acinetobacter junni,,,,,,
-1,Bangwe,Manure,Chicken Manure,MEM,24,S,Acinetobacter junni,,,,,,
-1,Bangwe,Manure,Chicken Manure ,SXT,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Manure,Chicken Manure ,CIP,22,I,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Manure,Chicken Manure ,TGC,10,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Manure,Chicken Manure ,CTX,23,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Manure,Chicken Manure ,AMP,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Manure,Chicken Manure ,GM,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Manure,Chicken Manure ,SXT,6,R,E. coli,,,,,,
-1,Bangwe,Manure,Chicken Manure ,CIP,26,S,E. coli,,,,,,
-1,Bangwe,Manure,Chicken Manure ,TGC,19,S,E. coli,,,,,,
-1,Bangwe,Manure,Chicken Manure ,CTX,6,R,E. coli,,,,,,
-1,Bangwe,Manure,Chicken Manure ,AMP,6,R,E. coli,,,,,,
-1,Bangwe,Manure,Chicken Manure ,GM,21,S,E. coli,,,,,,
-1,Bangwe,Vegetable,Chinese Cabbage ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Chinese Cabbage ,CIP,28,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Chinese Cabbage ,TGC,19,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Chinese Cabbage ,CTX,28,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Chinese Cabbage ,AMP,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Chinese Cabbage ,GM,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Farm soil,ATM,23,S,Serratia odoniferia,,,,,,
-1,Bangwe,Soil,Farm soil,CTX,20,R,Serratia odoniferia,,,,,,
-1,Bangwe,Soil,Farm soil,GM,20,S,Serratia odoniferia,,,,,,
-1,Bangwe,Soil,Farm soil,CRO,5,R,Serratia odoniferia,,,,,,
-1,Bangwe,Soil,Farm soil,CIP,24,S,Serratia odoniferia,,,,,,
-1,Bangwe,Soil,Farm soil ,SXT,21,S,E. coli,,,,,,
-1,Bangwe,Soil,Farm soil ,CIP,28,S,E. coli,,,,,,
-1,Bangwe,Soil,Farm soil ,TGC,23,S,E. coli,,,,,,
-1,Bangwe,Soil,Farm soil ,CTX,7,R,E. coli,,,,,,
-1,Bangwe,Soil,Farm soil ,AMP,10,R,E. coli,,,,,,
-1,Bangwe,Soil,Farm soil ,GM,20,S,E. coli,,,,,,
-1,Bangwe,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,CIP,24,I,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,TGC,15,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,CTX,25,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,AMP,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,GM,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,CIP,20,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,TGC,24,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,CTX,21,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,AMP,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,GM,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,CIP,23,I,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,TGC,20,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,CTX,25,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,AMP,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Soil,Home soil ,GM,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,CIP,25,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,TGC,17,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,CTX,26,S,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,AMP,6,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,GM,7,R,Klebsiella pneumoniae,,,,,,
-1,Bangwe,Vegetable,Rape ,ATM,3,R,Pasteurella Spp,,,,,,
-1,Bangwe,Vegetable,Rape ,GM,5,R,Pasteurella Spp,,,,,,
-1,Bangwe,Vegetable,Rape ,CRO,20,S,Pasteurella Spp,,,,,,
-1,Bangwe,Vegetable,Rape ,AMP,6,R,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,SXT,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Amaranthus,CIP,26,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Amaranthus,TGC,20,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Amaranthus,CTX,19,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Amaranthus,AMP,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Amaranthus,GM,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Amaranthus,ATM,30,S,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,GM,7,R,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,CRO,36,S,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,AMP,8,R,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,ATM,30,S,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,SXT,8,R,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,GM,0,R,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,VAN,0,R,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,CRO,36,S,Pasteurella Spp,,,,,,
-2,Chigumula,Vegetable, Amaranthus,CIP,32,S,Pasteurella Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,ATM,24,S,Acinetobacter Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,SXT,0,R,Acinetobacter Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,GM,21,S,Acinetobacter Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,VAN,0,R,Acinetobacter Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,CRO,14,I,Acinetobacter Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,CIP,23,S,Acinetobacter Spp,,,,,,
-2,Chigumula, Manure, Chicken Manure,SXT,25,S,E. coli,,,,,,
-2,Chigumula, Manure, Chicken Manure,CIP,32,S,E. coli,,,,,,
-2,Chigumula, Manure, Chicken Manure,TGC,19,S,E. coli,,,,,,
-2,Chigumula, Manure, Chicken Manure,CTX,14,S,E. coli,,,,,,
-2,Chigumula, Manure, Chicken Manure,AMP,21,S,E. coli,,,,,,
-2,Chigumula, Manure, Chicken Manure,GM,7,R,E. coli,,,,,,
-2,Chigumula,Vegetable, Chinese Cabbage,SXT,6,R,Raoultella ornitholytica,,,,,,
-2,Chigumula,Vegetable, Chinese Cabbage,CIP,25,S,Raoultella ornitholytica,,,,,,
-2,Chigumula,Vegetable, Chinese Cabbage,TGC,18,S,Raoultella ornitholytica,,,,,,
-2,Chigumula,Vegetable, Chinese Cabbage,CTX,23,S,Raoultella ornitholytica,,,,,,
-2,Chigumula,Vegetable, Chinese Cabbage,AMP,9,R,Raoultella ornitholytica,,,,,,
-2,Chigumula,Vegetable, Chinese Cabbage,GM,20,S,Raoultella ornitholytica,,,,,,
-2,Chigumula,Soil, Farm soil,SXT,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Soil, Farm soil,CIP,23,I,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Soil, Farm soil,TGC,28,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Soil, Farm soil,CTX,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Soil, Farm soil,AMP,7,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Soil, Farm soil,GM,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Soil, Farm soil,ATM,0,R,Pseudomonas Spp,,,,,,
-2,Chigumula,Soil, Farm soil,CTX,19,R,Pseudomonas Spp,,,,,,
-2,Chigumula,Soil, Farm soil,GM,25,S,Pseudomonas Spp,,,,,,
-2,Chigumula,Soil, Farm soil,CRO,18,I,Pseudomonas Spp,,,,,,
-2,Chigumula,Soil, Farm soil,CIP,26,S,Pseudomonas Spp,,,,,,
-2,Chigumula,Vegetable, Rape,SXT,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Rape,CIP,24,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Rape,TGC,25,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Rape,CTX,21,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Rape,AMP,6,R,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Rape,GM,21,S,Klebsiella pneumoniae,,,,,,
-2,Chigumula,Vegetable, Rape,ATM,19,S,Erwinia Spp,,,,,,
-2,Chigumula,Vegetable, Rape,CRO,25,S,Erwinia Spp,,,,,,
-2,Chigumula,Vegetable, Rape,CIP,30,S,Erwinia Spp,,,,,,
-2,Chigumula,Vegetable, Rape,GM,20,S,Erwinia Spp,,,,,,
-2,Chigumula,Vegetable, Rape,TGC,20,S,Erwinia Spp,,,,,,
-3,Chileka1,Vegetable,Amaranthus,SXT,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Amaranthus,CIP,20,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Amaranthus,TGC,27,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Amaranthus,CTX,21,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Amaranthus,AMP,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Amaranthus,GM,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Chinese Cabbage,SXT,6,R,E. coli,,,,,,
-3,Chileka1,Vegetable,Chinese Cabbage,CIP,25,S,E. coli,,,,,,
-3,Chileka1,Vegetable,Chinese Cabbage,TGC,18,S,E. coli,,,,,,
-3,Chileka1,Vegetable,Chinese Cabbage,CTX,25,S,E. coli,,,,,,
-3,Chileka1,Vegetable,Chinese Cabbage,AMP,6,R,E. coli,,,,,,
-3,Chileka1,Vegetable,Chinese Cabbage,GM,7,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,SXT,6,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,CIP,22,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,TGC,20,S,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,CTX,10,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,AMP,7,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,GM,7,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,SXT,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Farm soil,CIP,25,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Farm soil,TGC,15,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Farm soil,CTX,25,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Farm soil,AMP,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Farm soil,GM,7,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Farm soil,SXT,6,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,CIP,22,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,TGC,20,S,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,CTX,10,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,AMP,7,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil,GM,7,R,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil ,ATM,24,S,Pseudomonas luteola,,,,,,
-3,Chileka1,Soil,Farm soil ,CTX,22,S,Pseudomonas luteola,,,,,,
-3,Chileka1,Soil,Farm soil ,GM,23,S,Pseudomonas luteola,,,,,,
-3,Chileka1,Soil,Farm soil ,CRO,15,I,Pseudomonas luteola,,,,,,
-3,Chileka1,Soil,Farm soil ,CIP,25,S,Pseudomonas luteola,,,,,,
-3,Chileka1,Soil,Farm soil ,ATM,11,R,Xanthomonas maltophilia,,,,,,
-3,Chileka1,Soil,Farm soil ,SXT,0,R,Xanthomonas maltophilia,,,,,,
-3,Chileka1,Soil,Farm soil ,GM,18,S,Xanthomonas maltophilia,,,,,,
-3,Chileka1,Soil,Farm soil ,TGC,8,R,Xanthomonas maltophilia,,,,,,
-3,Chileka1,Soil,Farm soil ,CRO,0,R,Xanthomonas maltophilia,,,,,,
-3,Chileka1,Soil,Farm soil ,CIP,27,S,Xanthomonas maltophilia,,,,,,
-3,Chileka1,Soil,Farm soil ,ATM,24,S,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil ,SXT,28,S,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil ,GM,28,S,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil ,VAN,14,I,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil ,CRO,30,S,E. coli,,,,,,
-3,Chileka1,Soil,Farm soil ,CIP,26,S,E. coli,,,,,,
-3,Chileka1,Soil,Home soil,ATM,27,S,Stenotrophomonas,,,,,,
-3,Chileka1,Soil,Home soil,SXT,33,S,Stenotrophomonas,,,,,,
-3,Chileka1,Soil,Home soil,GM,30,S,Stenotrophomonas,,,,,,
-3,Chileka1,Soil,Home soil,VAN,16,R,Stenotrophomonas,,,,,,
-3,Chileka1,Soil,Home soil,CRO,27,S,Stenotrophomonas,,,,,,
-3,Chileka1,Soil,Home soil,CIP,32,S,Stenotrophomonas,,,,,,
-3,Chileka1,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Home soil ,CIP,21,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Home soil ,TGC,22,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Home soil ,CTX,22,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Home soil ,AMP,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Soil,Home soil ,GM,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Manure,Pig Manure,ATM,22,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,SXT,19,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,GM,18,I,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,VAN,0,R,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,CRO,24,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,CIP,30,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,SXT,7,R,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,CIP,35,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,TGC,23,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,CTX,24,S,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,AMP,6,R,E. coli,,,,,,
-3,Chileka1,Manure,Pig Manure,GM,22,S,E. coli,,,,,,
-3,Chileka1,Vegetable,Rape,SXT,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Rape,CIP,20,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Rape,TGC,24,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Rape,CTX,21,S,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Rape,AMP,6,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Rape,GM,7,R,Klebsiella pneumoniae,,,,,,
-3,Chileka1,Vegetable,Rape,ATM,0,R,Pseudomonas cepacia,,,,,,
-3,Chileka1,Vegetable,Rape,CTX,15,R,Pseudomonas cepacia,,,,,,
-3,Chileka1,Vegetable,Rape,GM,0,R,Pseudomonas cepacia,,,,,,
-3,Chileka1,Vegetable,Rape,CRO,19,S,Pseudomonas cepacia,,,,,,
-3,Chileka1,Vegetable,Rape,CIP,18,R,Pseudomonas cepacia,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,ATM,0,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,GM,9,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,CRO,15,S,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,AMP,7,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,ATM,0,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,SXT,0,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,GM,0,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,VAN,0,R,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,CRO,15,I,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Amaranthus,CIP,18,I,Pasteurella Spp,,,,,,
-4,Chileka2 ,Vegetable,Chinese Cabbage,SXT,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Chinese Cabbage,CIP,24,I,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Chinese Cabbage,TGC,16,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Chinese Cabbage,CTX,25,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Chinese Cabbage,AMP,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Chinese Cabbage,GM,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Farm soil,ATM,21,S,Xanthomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Farm soil,SXT,24,S,Xanthomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Farm soil,GM,25,S,Xanthomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Farm soil,TGC,15,I,Xanthomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Farm soil,CRO,24,S,Xanthomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Farm soil,CIP,25,S,Xanthomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Farm soil ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Farm soil ,CIP,23,I,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Farm soil ,TGC,19,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Farm soil ,CTX,21,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Farm soil ,AMP,7,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Farm soil ,GM,7,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,SXT,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,CIP,24,I,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,TGC,24,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,CTX,26,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,AMP,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,GM,7,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Soil,Home soil,ATM,0,R,Stenotrophomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Home soil,SXT,0,R,Stenotrophomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Home soil,GM,26,S,Stenotrophomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Home soil,TGC,7,R,Stenotrophomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Home soil,CRO,18,S,Stenotrophomonas maltophilia,,,,,,
-4,Chileka2 ,Soil,Home soil,CIP,29,S,Stenotrophomonas maltophilia,,,,,,
-4,Chileka2 ,Manure,Pig Manure,SXT,7,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Manure,Pig Manure,CIP,25,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Manure,Pig Manure,TGC,17,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Manure,Pig Manure,CTX,28,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Manure,Pig Manure,AMP,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Manure,Pig Manure,GM,7,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Manure,Pig Manure,ATM,21,S,E. coli,,,,,,
-4,Chileka2 ,Manure,Pig Manure,SXT,0,R,E. coli,,,,,,
-4,Chileka2 ,Manure,Pig Manure,GM,20,S,E. coli,,,,,,
-4,Chileka2 ,Manure,Pig Manure,VAN,0,R,E. coli,,,,,,
-4,Chileka2 ,Manure,Pig Manure,CRO,0,R,E. coli,,,,,,
-4,Chileka2 ,Manure,Pig Manure,CIP,23,S,E. coli,,,,,,
-4,Chileka2 ,Vegetable,Rape,SXT,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Rape,CIP,22,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Rape,TGC,18,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Rape,CTX,23,S,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Rape,AMP,6,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Rape,GM,7,R,Klebsiella pneumoniae,,,,,,
-4,Chileka2 ,Vegetable,Rape,ATM,30,S,Pseudomonas aeruginosa,,,,,,
-4,Chileka2 ,Vegetable,Rape,CTX,18,R,Pseudomonas aeruginosa,,,,,,
-4,Chileka2 ,Vegetable,Rape,GM,28,S,Pseudomonas aeruginosa,,,,,,
-4,Chileka2 ,Vegetable,Rape,CRO,22,S,Pseudomonas aeruginosa,,,,,,
-4,Chileka2 ,Vegetable,Rape,CIP,39,S,Pseudomonas aeruginosa,,,,,,
-5,Mpemba,Vegetable, Amaranthus,SXT,25,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Amaranthus,CIP,28,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Amaranthus,TGC,15,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Amaranthus,CTX,23,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Amaranthus,AMP,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Amaranthus,GM,20,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,ATM,25,S,Serratia odoniferia,,,,,,
-5,Mpemba,Manure, Chicken Manure,CTX,21,S,Serratia odoniferia,,,,,,
-5,Mpemba,Manure, Chicken Manure,GM,23,S,Serratia odoniferia,,,,,,
-5,Mpemba,Manure, Chicken Manure,CRO,20,I,Serratia odoniferia,,,,,,
-5,Mpemba,Manure, Chicken Manure,CIP,29,S,Serratia odoniferia,,,,,,
-5,Mpemba,Manure, Chicken Manure,SXT,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,CIP,25,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,TGC,18,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,CTX,28,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,AMP,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,GM,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Chicken Manure,ATM,13,R,E. coli,,,,,,
-5,Mpemba,Manure, Chicken Manure,SXT,0,R,E. coli,,,,,,
-5,Mpemba,Manure, Chicken Manure,GM,29,S,E. coli,,,,,,
-5,Mpemba,Manure, Chicken Manure,VAN,0,R,E. coli,,,,,,
-5,Mpemba,Manure, Chicken Manure,CRO,28,S,E. coli,,,,,,
-5,Mpemba,Manure, Chicken Manure,CIP,30,S,E. coli,,,,,,
-5,Mpemba,Vegetable, Chinese Cabbage,SXT,24,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Chinese Cabbage,CIP,24,I,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Chinese Cabbage,TGC,22,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Chinese Cabbage,CTX,22,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Chinese Cabbage,AMP,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Chinese Cabbage,GM,18,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Farm soil,SXT,6,R,E. coli,,,,,,
-5,Mpemba,Soil, Farm soil,CIP,30,S,E. coli,,,,,,
-5,Mpemba,Soil, Farm soil,TGC,18,S,E. coli,,,,,,
-5,Mpemba,Soil, Farm soil,CTX,24,S,E. coli,,,,,,
-5,Mpemba,Soil, Farm soil,AMP,17,S,E. coli,,,,,,
-5,Mpemba,Soil, Farm soil,GM,17,S,E. coli,,,,,,
-5,Mpemba,Soil, Farm soil,CTX,15,S,Yersinia pestis,,,,,,
-5,Mpemba,Soil, Farm soil,GM,5,R,Yersinia pestis,,,,,,
-5,Mpemba,Soil, Farm soil,CRO,0,R,Yersinia pestis,,,,,,
-5,Mpemba,Soil, Farm soil,CIP,25,S,Yersinia pestis,,,,,,
-5,Mpemba,Soil, Farm soil ,SXT,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Farm soil ,CIP,20,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Farm soil ,TGC,17,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Farm soil ,CTX,17,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Farm soil ,AMP,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Farm soil ,GM,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,SXT,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,CIP,22,I,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,TGC,17,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,CTX,21,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,AMP,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,GM,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Soil, Home soil,ATM,25,S,Salmonella choleraesuis,,,,,,
-5,Mpemba,Soil, Home soil,SXT,0,R,Salmonella choleraesuis,,,,,,
-5,Mpemba,Soil, Home soil,GM,0,R,Salmonella choleraesuis,,,,,,
-5,Mpemba,Soil, Home soil,VAN,0,R,Salmonella choleraesuis,,,,,,
-5,Mpemba,Soil, Home soil,CRO,24,S,Salmonella choleraesuis,,,,,,
-5,Mpemba,Soil, Home soil,CIP,28,S,Salmonella choleraesuis,,,,,,
-5,Mpemba,Manure, Pig Manure,SXT,6,R,E. coli,,,,,,
-5,Mpemba,Manure, Pig Manure,CIP,32,S,E. coli,,,,,,
-5,Mpemba,Manure, Pig Manure,TGC,22,S,E. coli,,,,,,
-5,Mpemba,Manure, Pig Manure,CTX,26,S,E. coli,,,,,,
-5,Mpemba,Manure, Pig Manure,AMP,6,R,E. coli,,,,,,
-5,Mpemba,Manure, Pig Manure,GM,11,R,E. coli,,,,,,
-5,Mpemba,Manure, Pig Manure,SXT,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Pig Manure,CIP,26,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Pig Manure,TGC,20,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Pig Manure,CTX,27,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Pig Manure,AMP,6,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Pig Manure,GM,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Manure, Pig Manure,SXT,11,R,Acinetobacter pitii,,,,,,
-5,Mpemba,Manure, Pig Manure,CIP,24,I,Acinetobacter pitii,,,,,,
-5,Mpemba,Manure, Pig Manure,GM,7,R,Acinetobacter pitii,,,,,,
-5,Mpemba,Manure, Pig Manure,MEM,24,S,Acinetobacter pitii,,,,,,
-5,Mpemba,Manure, Pig Manure,ATM,23,S,Acinetobacter Spp,,,,,,
-5,Mpemba,Manure, Pig Manure,SXT,0,R,Acinetobacter Spp,,,,,,
-5,Mpemba,Manure, Pig Manure,GM,23,S,Acinetobacter Spp,,,,,,
-5,Mpemba,Manure, Pig Manure,VAN,0,R,Acinetobacter Spp,,,,,,
-5,Mpemba,Manure, Pig Manure,CRO,0,R,Acinetobacter Spp,,,,,,
-5,Mpemba,Manure, Pig Manure,CIP,24,S,Acinetobacter Spp,,,,,,
-5,Mpemba,Vegetable, Rape,SXT,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape,CIP,23,I,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape,TGC,18,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape,CTX,24,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape,AMP,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape,GM,7,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,ATM,0,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,CTX,17,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,GM,0,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,CRO,15,S,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,CIP,25,S,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,ATM,10,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,SXT,20,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,GM,20,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,VAN,0,R,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,CRO,29,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,CIP,25,S,Klebsiella pneumoniae,,,,,,
-5,Mpemba,Vegetable, Rape ,ATM,0,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,SXT,0,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,GM,0,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,VAN,0,R,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,CRO,15,I,Pseudomonas cepacia,,,,,,
-5,Mpemba,Vegetable, Rape ,CIP,25,S,Pseudomonas cepacia,,,,,,
+id,farm,sample,item,antibiotic,inhibition,sensitivity,microbe
+1,Bangwe,Vegetable, Amaranthus ,SXT,6,R,E. coli
+1,Bangwe,Vegetable, Amaranthus ,CIP,24,I,E. coli
+1,Bangwe,Vegetable, Amaranthus ,TGC,20,S,E. coli
+1,Bangwe,Vegetable, Amaranthus ,CTX,23,S,E. coli
+1,Bangwe,Vegetable, Amaranthus ,AMP,6,R,E. coli
+1,Bangwe,Vegetable, Amaranthus ,GM,6,R,E. coli
+1,Bangwe,Manure,Chicken manure,SXT,20,S,Acinetobacter junni
+1,Bangwe,Manure,Chicken manure,CIP,26,I,Acinetobacter junni
+1,Bangwe,Manure,Chicken manure,GM,20,R,Acinetobacter junni
+1,Bangwe,Manure,Chicken manure,MEM,24,S,Acinetobacter junni
+1,Bangwe,Manure,Chicken manure ,SXT,7,R,Klebsiella pneumoniae
+1,Bangwe,Manure,Chicken manure ,CIP,22,I,Klebsiella pneumoniae
+1,Bangwe,Manure,Chicken manure ,TGC,10,R,Klebsiella pneumoniae
+1,Bangwe,Manure,Chicken manure ,CTX,23,S,Klebsiella pneumoniae
+1,Bangwe,Manure,Chicken manure ,AMP,7,R,Klebsiella pneumoniae
+1,Bangwe,Manure,Chicken manure ,GM,7,R,Klebsiella pneumoniae
+1,Bangwe,Manure,Chicken manure ,SXT,6,R,E. coli
+1,Bangwe,Manure,Chicken manure ,CIP,26,S,E. coli
+1,Bangwe,Manure,Chicken manure ,TGC,19,S,E. coli
+1,Bangwe,Manure,Chicken manure ,CTX,6,R,E. coli
+1,Bangwe,Manure,Chicken manure ,AMP,6,R,E. coli
+1,Bangwe,Manure,Chicken manure ,GM,21,S,E. coli
+1,Bangwe,Vegetable,Chinese Cabbage ,SXT,6,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Chinese Cabbage ,CIP,28,S,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Chinese Cabbage ,TGC,19,S,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Chinese Cabbage ,CTX,28,S,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Chinese Cabbage ,AMP,6,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Chinese Cabbage ,GM,7,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Farm soil,ATM,23,S,Serratia odoniferia
+1,Bangwe,Soil,Farm soil,CTX,20,R,Serratia odoniferia
+1,Bangwe,Soil,Farm soil,GM,20,S,Serratia odoniferia
+1,Bangwe,Soil,Farm soil,CRO,5,R,Serratia odoniferia
+1,Bangwe,Soil,Farm soil,CIP,24,S,Serratia odoniferia
+1,Bangwe,Soil,Farm soil ,SXT,21,S,E. coli
+1,Bangwe,Soil,Farm soil ,CIP,28,S,E. coli
+1,Bangwe,Soil,Farm soil ,TGC,23,S,E. coli
+1,Bangwe,Soil,Farm soil ,CTX,7,R,E. coli
+1,Bangwe,Soil,Farm soil ,AMP,10,R,E. coli
+1,Bangwe,Soil,Farm soil ,GM,20,S,E. coli
+1,Bangwe,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,CIP,24,I,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,TGC,15,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,CTX,25,S,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,AMP,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,GM,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,CIP,20,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,TGC,24,S,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,CTX,21,S,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,AMP,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,GM,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,CIP,23,I,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,TGC,20,S,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,CTX,25,S,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,AMP,7,R,Klebsiella pneumoniae
+1,Bangwe,Soil,Home soil ,GM,7,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,SXT,6,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,CIP,25,S,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,TGC,17,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,CTX,26,S,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,AMP,6,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,GM,7,R,Klebsiella pneumoniae
+1,Bangwe,Vegetable,Rape ,ATM,3,R,Pasteurella Spp
+1,Bangwe,Vegetable,Rape ,GM,5,R,Pasteurella Spp
+1,Bangwe,Vegetable,Rape ,CRO,20,S,Pasteurella Spp
+1,Bangwe,Vegetable,Rape ,AMP,6,R,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,SXT,6,R,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Amaranthus,CIP,26,S,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Amaranthus,TGC,20,S,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Amaranthus,CTX,19,R,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Amaranthus,AMP,6,R,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Amaranthus,GM,6,R,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Amaranthus,ATM,30,S,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,GM,7,R,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,CRO,36,S,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,AMP,8,R,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,ATM,30,S,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,SXT,8,R,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,GM,0,R,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,VAN,0,R,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,CRO,36,S,Pasteurella Spp
+2,Chigumula,Vegetable, Amaranthus,CIP,32,S,Pasteurella Spp
+2,Chigumula, Manure, Chicken manure,ATM,24,S,Acinetobacter Spp
+2,Chigumula, Manure, Chicken manure,SXT,0,R,Acinetobacter Spp
+2,Chigumula, Manure, Chicken manure,GM,21,S,Acinetobacter Spp
+2,Chigumula, Manure, Chicken manure,VAN,0,R,Acinetobacter Spp
+2,Chigumula, Manure, Chicken manure,CRO,14,I,Acinetobacter Spp
+2,Chigumula, Manure, Chicken manure,CIP,23,S,Acinetobacter Spp
+2,Chigumula, Manure, Chicken manure,SXT,25,S,E. coli
+2,Chigumula, Manure, Chicken manure,CIP,32,S,E. coli
+2,Chigumula, Manure, Chicken manure,TGC,19,S,E. coli
+2,Chigumula, Manure, Chicken manure,CTX,14,S,E. coli
+2,Chigumula, Manure, Chicken manure,AMP,21,S,E. coli
+2,Chigumula, Manure, Chicken manure,GM,7,R,E. coli
+2,Chigumula,Vegetable, Chinese Cabbage,SXT,6,R,Raoultella ornitholytica
+2,Chigumula,Vegetable, Chinese Cabbage,CIP,25,S,Raoultella ornitholytica
+2,Chigumula,Vegetable, Chinese Cabbage,TGC,18,S,Raoultella ornitholytica
+2,Chigumula,Vegetable, Chinese Cabbage,CTX,23,S,Raoultella ornitholytica
+2,Chigumula,Vegetable, Chinese Cabbage,AMP,9,R,Raoultella ornitholytica
+2,Chigumula,Vegetable, Chinese Cabbage,GM,20,S,Raoultella ornitholytica
+2,Chigumula,Soil, Farm soil,SXT,6,R,Klebsiella pneumoniae
+2,Chigumula,Soil, Farm soil,CIP,23,I,Klebsiella pneumoniae
+2,Chigumula,Soil, Farm soil,TGC,28,S,Klebsiella pneumoniae
+2,Chigumula,Soil, Farm soil,CTX,6,R,Klebsiella pneumoniae
+2,Chigumula,Soil, Farm soil,AMP,7,R,Klebsiella pneumoniae
+2,Chigumula,Soil, Farm soil,GM,6,R,Klebsiella pneumoniae
+2,Chigumula,Soil, Farm soil,ATM,0,R,Pseudomonas Spp
+2,Chigumula,Soil, Farm soil,CTX,19,R,Pseudomonas Spp
+2,Chigumula,Soil, Farm soil,GM,25,S,Pseudomonas Spp
+2,Chigumula,Soil, Farm soil,CRO,18,I,Pseudomonas Spp
+2,Chigumula,Soil, Farm soil,CIP,26,S,Pseudomonas Spp
+2,Chigumula,Vegetable, Rape,SXT,6,R,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Rape,CIP,24,S,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Rape,TGC,25,S,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Rape,CTX,21,S,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Rape,AMP,6,R,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Rape,GM,21,S,Klebsiella pneumoniae
+2,Chigumula,Vegetable, Rape,ATM,19,S,Erwinia Spp
+2,Chigumula,Vegetable, Rape,CRO,25,S,Erwinia Spp
+2,Chigumula,Vegetable, Rape,CIP,30,S,Erwinia Spp
+2,Chigumula,Vegetable, Rape,GM,20,S,Erwinia Spp
+2,Chigumula,Vegetable, Rape,TGC,20,S,Erwinia Spp
+3,Chileka1,Vegetable,Amaranthus,SXT,6,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Amaranthus,CIP,20,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Amaranthus,TGC,27,S,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Amaranthus,CTX,21,S,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Amaranthus,AMP,6,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Amaranthus,GM,6,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Chinese Cabbage,SXT,6,R,E. coli
+3,Chileka1,Vegetable,Chinese Cabbage,CIP,25,S,E. coli
+3,Chileka1,Vegetable,Chinese Cabbage,TGC,18,S,E. coli
+3,Chileka1,Vegetable,Chinese Cabbage,CTX,25,S,E. coli
+3,Chileka1,Vegetable,Chinese Cabbage,AMP,6,R,E. coli
+3,Chileka1,Vegetable,Chinese Cabbage,GM,7,R,E. coli
+3,Chileka1,Soil,Farm soil,SXT,6,R,E. coli
+3,Chileka1,Soil,Farm soil,CIP,22,R,E. coli
+3,Chileka1,Soil,Farm soil,TGC,20,S,E. coli
+3,Chileka1,Soil,Farm soil,CTX,10,R,E. coli
+3,Chileka1,Soil,Farm soil,AMP,7,R,E. coli
+3,Chileka1,Soil,Farm soil,GM,7,R,E. coli
+3,Chileka1,Soil,Farm soil,SXT,6,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Farm soil,CIP,25,S,Klebsiella pneumoniae
+3,Chileka1,Soil,Farm soil,TGC,15,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Farm soil,CTX,25,S,Klebsiella pneumoniae
+3,Chileka1,Soil,Farm soil,AMP,6,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Farm soil,GM,7,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Farm soil,SXT,6,R,E. coli
+3,Chileka1,Soil,Farm soil,CIP,22,R,E. coli
+3,Chileka1,Soil,Farm soil,TGC,20,S,E. coli
+3,Chileka1,Soil,Farm soil,CTX,10,R,E. coli
+3,Chileka1,Soil,Farm soil,AMP,7,R,E. coli
+3,Chileka1,Soil,Farm soil,GM,7,R,E. coli
+3,Chileka1,Soil,Farm soil ,ATM,24,S,Pseudomonas luteola
+3,Chileka1,Soil,Farm soil ,CTX,22,S,Pseudomonas luteola
+3,Chileka1,Soil,Farm soil ,GM,23,S,Pseudomonas luteola
+3,Chileka1,Soil,Farm soil ,CRO,15,I,Pseudomonas luteola
+3,Chileka1,Soil,Farm soil ,CIP,25,S,Pseudomonas luteola
+3,Chileka1,Soil,Farm soil ,ATM,11,R,Xanthomonas maltophilia
+3,Chileka1,Soil,Farm soil ,SXT,0,R,Xanthomonas maltophilia
+3,Chileka1,Soil,Farm soil ,GM,18,S,Xanthomonas maltophilia
+3,Chileka1,Soil,Farm soil ,TGC,8,R,Xanthomonas maltophilia
+3,Chileka1,Soil,Farm soil ,CRO,0,R,Xanthomonas maltophilia
+3,Chileka1,Soil,Farm soil ,CIP,27,S,Xanthomonas maltophilia
+3,Chileka1,Soil,Farm soil ,ATM,24,S,E. coli
+3,Chileka1,Soil,Farm soil ,SXT,28,S,E. coli
+3,Chileka1,Soil,Farm soil ,GM,28,S,E. coli
+3,Chileka1,Soil,Farm soil ,VAN,14,I,E. coli
+3,Chileka1,Soil,Farm soil ,CRO,30,S,E. coli
+3,Chileka1,Soil,Farm soil ,CIP,26,S,E. coli
+3,Chileka1,Soil,Home soil,ATM,27,S,Stenotrophomonas
+3,Chileka1,Soil,Home soil,SXT,33,S,Stenotrophomonas
+3,Chileka1,Soil,Home soil,GM,30,S,Stenotrophomonas
+3,Chileka1,Soil,Home soil,VAN,16,R,Stenotrophomonas
+3,Chileka1,Soil,Home soil,CRO,27,S,Stenotrophomonas
+3,Chileka1,Soil,Home soil,CIP,32,S,Stenotrophomonas
+3,Chileka1,Soil,Home soil ,SXT,6,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Home soil ,CIP,21,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Home soil ,TGC,22,S,Klebsiella pneumoniae
+3,Chileka1,Soil,Home soil ,CTX,22,S,Klebsiella pneumoniae
+3,Chileka1,Soil,Home soil ,AMP,6,R,Klebsiella pneumoniae
+3,Chileka1,Soil,Home soil ,GM,6,R,Klebsiella pneumoniae
+3,Chileka1,Manure,Pig manure,ATM,22,S,E. coli
+3,Chileka1,Manure,Pig manure,SXT,19,S,E. coli
+3,Chileka1,Manure,Pig manure,GM,18,I,E. coli
+3,Chileka1,Manure,Pig manure,VAN,0,R,E. coli
+3,Chileka1,Manure,Pig manure,CRO,24,S,E. coli
+3,Chileka1,Manure,Pig manure,CIP,30,S,E. coli
+3,Chileka1,Manure,Pig manure,SXT,7,R,E. coli
+3,Chileka1,Manure,Pig manure,CIP,35,S,E. coli
+3,Chileka1,Manure,Pig manure,TGC,23,S,E. coli
+3,Chileka1,Manure,Pig manure,CTX,24,S,E. coli
+3,Chileka1,Manure,Pig manure,AMP,6,R,E. coli
+3,Chileka1,Manure,Pig manure,GM,22,S,E. coli
+3,Chileka1,Vegetable,Rape,SXT,6,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Rape,CIP,20,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Rape,TGC,24,S,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Rape,CTX,21,S,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Rape,AMP,6,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Rape,GM,7,R,Klebsiella pneumoniae
+3,Chileka1,Vegetable,Rape,ATM,0,R,Pseudomonas cepacia
+3,Chileka1,Vegetable,Rape,CTX,15,R,Pseudomonas cepacia
+3,Chileka1,Vegetable,Rape,GM,0,R,Pseudomonas cepacia
+3,Chileka1,Vegetable,Rape,CRO,19,S,Pseudomonas cepacia
+3,Chileka1,Vegetable,Rape,CIP,18,R,Pseudomonas cepacia
+4,Chileka2 ,Vegetable,Amaranthus,ATM,0,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,GM,9,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,CRO,15,S,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,AMP,7,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,ATM,0,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,SXT,0,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,GM,0,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,VAN,0,R,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,CRO,15,I,Pasteurella Spp
+4,Chileka2 ,Vegetable,Amaranthus,CIP,18,I,Pasteurella Spp
+4,Chileka2 ,Vegetable,Chinese Cabbage,SXT,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Chinese Cabbage,CIP,24,I,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Chinese Cabbage,TGC,16,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Chinese Cabbage,CTX,25,S,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Chinese Cabbage,AMP,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Chinese Cabbage,GM,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Farm soil,ATM,21,S,Xanthomonas maltophilia
+4,Chileka2 ,Soil,Farm soil,SXT,24,S,Xanthomonas maltophilia
+4,Chileka2 ,Soil,Farm soil,GM,25,S,Xanthomonas maltophilia
+4,Chileka2 ,Soil,Farm soil,TGC,15,I,Xanthomonas maltophilia
+4,Chileka2 ,Soil,Farm soil,CRO,24,S,Xanthomonas maltophilia
+4,Chileka2 ,Soil,Farm soil,CIP,25,S,Xanthomonas maltophilia
+4,Chileka2 ,Soil,Farm soil ,SXT,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Farm soil ,CIP,23,I,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Farm soil ,TGC,19,S,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Farm soil ,CTX,21,S,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Farm soil ,AMP,7,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Farm soil ,GM,7,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,SXT,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,CIP,24,I,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,TGC,24,S,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,CTX,26,S,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,AMP,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,GM,7,R,Klebsiella pneumoniae
+4,Chileka2 ,Soil,Home soil,ATM,0,R,Stenotrophomonas maltophilia
+4,Chileka2 ,Soil,Home soil,SXT,0,R,Stenotrophomonas maltophilia
+4,Chileka2 ,Soil,Home soil,GM,26,S,Stenotrophomonas maltophilia
+4,Chileka2 ,Soil,Home soil,TGC,7,R,Stenotrophomonas maltophilia
+4,Chileka2 ,Soil,Home soil,CRO,18,S,Stenotrophomonas maltophilia
+4,Chileka2 ,Soil,Home soil,CIP,29,S,Stenotrophomonas maltophilia
+4,Chileka2 ,Manure,Pig manure,SXT,7,R,Klebsiella pneumoniae
+4,Chileka2 ,Manure,Pig manure,CIP,25,S,Klebsiella pneumoniae
+4,Chileka2 ,Manure,Pig manure,TGC,17,R,Klebsiella pneumoniae
+4,Chileka2 ,Manure,Pig manure,CTX,28,S,Klebsiella pneumoniae
+4,Chileka2 ,Manure,Pig manure,AMP,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Manure,Pig manure,GM,7,R,Klebsiella pneumoniae
+4,Chileka2 ,Manure,Pig manure,ATM,21,S,E. coli
+4,Chileka2 ,Manure,Pig manure,SXT,0,R,E. coli
+4,Chileka2 ,Manure,Pig manure,GM,20,S,E. coli
+4,Chileka2 ,Manure,Pig manure,VAN,0,R,E. coli
+4,Chileka2 ,Manure,Pig manure,CRO,0,R,E. coli
+4,Chileka2 ,Manure,Pig manure,CIP,23,S,E. coli
+4,Chileka2 ,Vegetable,Rape,SXT,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Rape,CIP,22,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Rape,TGC,18,S,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Rape,CTX,23,S,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Rape,AMP,6,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Rape,GM,7,R,Klebsiella pneumoniae
+4,Chileka2 ,Vegetable,Rape,ATM,30,S,Pseudomonas aeruginosa
+4,Chileka2 ,Vegetable,Rape,CTX,18,R,Pseudomonas aeruginosa
+4,Chileka2 ,Vegetable,Rape,GM,28,S,Pseudomonas aeruginosa
+4,Chileka2 ,Vegetable,Rape,CRO,22,S,Pseudomonas aeruginosa
+4,Chileka2 ,Vegetable,Rape,CIP,39,S,Pseudomonas aeruginosa
+5,Mpemba,Vegetable, Amaranthus,SXT,25,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Amaranthus,CIP,28,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Amaranthus,TGC,15,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Amaranthus,CTX,23,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Amaranthus,AMP,7,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Amaranthus,GM,20,S,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,ATM,25,S,Serratia odoniferia
+5,Mpemba,Manure, Chicken manure,CTX,21,S,Serratia odoniferia
+5,Mpemba,Manure, Chicken manure,GM,23,S,Serratia odoniferia
+5,Mpemba,Manure, Chicken manure,CRO,20,I,Serratia odoniferia
+5,Mpemba,Manure, Chicken manure,CIP,29,S,Serratia odoniferia
+5,Mpemba,Manure, Chicken manure,SXT,6,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,CIP,25,S,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,TGC,18,S,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,CTX,28,S,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,AMP,6,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,GM,7,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Chicken manure,ATM,13,R,E. coli
+5,Mpemba,Manure, Chicken manure,SXT,0,R,E. coli
+5,Mpemba,Manure, Chicken manure,GM,29,S,E. coli
+5,Mpemba,Manure, Chicken manure,VAN,0,R,E. coli
+5,Mpemba,Manure, Chicken manure,CRO,28,S,E. coli
+5,Mpemba,Manure, Chicken manure,CIP,30,S,E. coli
+5,Mpemba,Vegetable, Chinese Cabbage,SXT,24,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Chinese Cabbage,CIP,24,I,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Chinese Cabbage,TGC,22,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Chinese Cabbage,CTX,22,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Chinese Cabbage,AMP,7,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Chinese Cabbage,GM,18,S,Klebsiella pneumoniae
+5,Mpemba,Soil, Farm soil,SXT,6,R,E. coli
+5,Mpemba,Soil, Farm soil,CIP,30,S,E. coli
+5,Mpemba,Soil, Farm soil,TGC,18,S,E. coli
+5,Mpemba,Soil, Farm soil,CTX,24,S,E. coli
+5,Mpemba,Soil, Farm soil,AMP,17,S,E. coli
+5,Mpemba,Soil, Farm soil,GM,17,S,E. coli
+5,Mpemba,Soil, Farm soil,CTX,15,S,Yersinia pestis
+5,Mpemba,Soil, Farm soil,GM,5,R,Yersinia pestis
+5,Mpemba,Soil, Farm soil,CRO,0,R,Yersinia pestis
+5,Mpemba,Soil, Farm soil,CIP,25,S,Yersinia pestis
+5,Mpemba,Soil, Farm soil ,SXT,6,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Farm soil ,CIP,20,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Farm soil ,TGC,17,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Farm soil ,CTX,17,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Farm soil ,AMP,6,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Farm soil ,GM,6,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,SXT,6,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,CIP,22,I,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,TGC,17,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,CTX,21,S,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,AMP,6,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,GM,7,R,Klebsiella pneumoniae
+5,Mpemba,Soil, Home soil,ATM,25,S,Salmonella choleraesuis
+5,Mpemba,Soil, Home soil,SXT,0,R,Salmonella choleraesuis
+5,Mpemba,Soil, Home soil,GM,0,R,Salmonella choleraesuis
+5,Mpemba,Soil, Home soil,VAN,0,R,Salmonella choleraesuis
+5,Mpemba,Soil, Home soil,CRO,24,S,Salmonella choleraesuis
+5,Mpemba,Soil, Home soil,CIP,28,S,Salmonella choleraesuis
+5,Mpemba,Manure, Pig manure,SXT,6,R,E. coli
+5,Mpemba,Manure, Pig manure,CIP,32,S,E. coli
+5,Mpemba,Manure, Pig manure,TGC,22,S,E. coli
+5,Mpemba,Manure, Pig manure,CTX,26,S,E. coli
+5,Mpemba,Manure, Pig manure,AMP,6,R,E. coli
+5,Mpemba,Manure, Pig manure,GM,11,R,E. coli
+5,Mpemba,Manure, Pig manure,SXT,6,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Pig manure,CIP,26,S,Klebsiella pneumoniae
+5,Mpemba,Manure, Pig manure,TGC,20,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Pig manure,CTX,27,S,Klebsiella pneumoniae
+5,Mpemba,Manure, Pig manure,AMP,6,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Pig manure,GM,7,R,Klebsiella pneumoniae
+5,Mpemba,Manure, Pig manure,SXT,11,R,Acinetobacter pitii
+5,Mpemba,Manure, Pig manure,CIP,24,I,Acinetobacter pitii
+5,Mpemba,Manure, Pig manure,GM,7,R,Acinetobacter pitii
+5,Mpemba,Manure, Pig manure,MEM,24,S,Acinetobacter pitii
+5,Mpemba,Manure, Pig manure,ATM,23,S,Acinetobacter Spp
+5,Mpemba,Manure, Pig manure,SXT,0,R,Acinetobacter Spp
+5,Mpemba,Manure, Pig manure,GM,23,S,Acinetobacter Spp
+5,Mpemba,Manure, Pig manure,VAN,0,R,Acinetobacter Spp
+5,Mpemba,Manure, Pig manure,CRO,0,R,Acinetobacter Spp
+5,Mpemba,Manure, Pig manure,CIP,24,S,Acinetobacter Spp
+5,Mpemba,Vegetable, Rape,SXT,7,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape,CIP,23,I,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape,TGC,18,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape,CTX,24,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape,AMP,7,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape,GM,7,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,ATM,0,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,CTX,17,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,GM,0,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,CRO,15,S,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,CIP,25,S,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,ATM,10,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,SXT,20,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,GM,20,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,VAN,0,R,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,CRO,29,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,CIP,25,S,Klebsiella pneumoniae
+5,Mpemba,Vegetable, Rape ,ATM,0,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,SXT,0,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,GM,0,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,VAN,0,R,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,CRO,15,I,Pseudomonas cepacia
+5,Mpemba,Vegetable, Rape ,CIP,25,S,Pseudomonas cepacia

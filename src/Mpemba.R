@@ -22,17 +22,35 @@ microbiology<- read_csv(here::here("data/raw/sorted.csv")) |>
   clean_names() |> 
   mutate_if(is.character, as_factor) |> 
   select(id:microbe)
+microbiology<-microbiology |> 
+  mutate(
+    farm=fct_recode(farm,
+                    "farm 1"= "Bangwe",
+                    "farm 2"="Chigumula",
+                    "farm 3" = "Mpemba",
+                    "farm 4" = "Chileka1",
+                    "farm 5" = "Chileka2"
+    )
+  ) |> 
+  mutate(farm=factor(farm, 
+                     levels = c("farm 1",
+                                "farm 2",
+                                "farm 3",
+                                "farm 4",
+                                "farm 5")))  
+
+
 
 
 
 
 #I will start by assessing statistical significnce on the presence of different microbes
 
-Chileka2<-microbiology |> 
-  filter(farm == "Chileka2") 
+Mpemba<-microbiology |> 
+  filter(farm == "farm 3") 
 
 # Step 1: Calculate Mean Inhibition and Standard Error
-summary_data <- Chileka2 |> 
+summary_data <- Mpemba |> 
   group_by(item) |>  # Group by sample type (manure, soil, vegetables)
   summarise(
     mean_inhibition = mean(inhibition, na.rm = TRUE), # Calculate mean inhibition
@@ -49,7 +67,7 @@ line_plot <- ggplot(summary_data, aes(x = item, y = mean_inhibition, group = 1))
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = mean_inhibition - se_inhibition, ymax = mean_inhibition + se_inhibition), width = 0.2) +
   geom_text(aes(label = round(mean_inhibition, 2)), vjust = -1, size = 5) + # Add mean values as text labels
-  labs(title = "Microbial Inhibition Across Sample Types (Chileka2)",
+  labs(title = "Microbial Inhibition Across Sample Types (Farm 3)",
        x = "Sample Type (Manure, Soil, Vegetables)",
        y = "Mean Inhibition") +
   theme_minimal()+
@@ -58,7 +76,8 @@ line_plot <- ggplot(summary_data, aes(x = item, y = mean_inhibition, group = 1))
     axis.title.y = element_text(size = 14), # Increase font size for y-axis title
     axis.text.x = element_text(size = 12, angle = 10, hjust = 1),   # Increase font size for x-axis categories (tick labels)
     axis.text.y = element_text(size = 12)     # Increase font size for y-axis categories (tick labels)
-  )
+  )+
+  my_theme
 
 # Display the plot
 print(line_plot)
@@ -66,7 +85,7 @@ print(line_plot)
 
 #I want to do anova 
 # Two way ANOVA
-model <- aov(inhibition ~ antibiotic * item, data = Chileka2)
+model <- aov(inhibition ~ antibiotic * item, data = Mpemba)
 #tidy anova results
 anova_results <- tidy(model)
 
@@ -105,7 +124,7 @@ anova_table <- anova_results %>%
 print(anova_table)
 
 
-anova_table |> gtsave("anova.docx")
+anova_table |> gtsave("Mpemba-anova.docx")
 
 
 # Step 2: Run Tukey's HSD Test
@@ -126,7 +145,7 @@ result_table <- result_table %>%
 final<-result_table |> 
   filter(Adjusted_p_value<0.05) 
 
-final %>%
+mpemba_t_final<-final %>%
   mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
   gt() %>%
   tab_header(
@@ -136,7 +155,40 @@ final %>%
     footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
     locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
   )
+mpemba_t_final |> gtsave( "mpemba_t_final.docx")
 
 
+
+# Phase 3 -----------------------------------------------------------------
+
+# Step 2: Run Tukey's HSD Test
+tukey_result <- TukeyHSD(model)
+
+
+result_table <- as_tibble(tukey_result$`antibiotic:item`, rownames = "Comparison")
+
+# Step 2: Rename columns for clarity
+result_table <- result_table %>%
+  rename(
+    Difference = diff,
+    Lower_CI = lwr,
+    Upper_CI = upr,
+    Adjusted_p_value = `p adj`
+  )
+
+final<-result_table |> 
+  filter(Adjusted_p_value<0.05) 
+
+mpemba_t_final<-final %>%
+  mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
+  gt() %>%
+  tab_header(
+    title = "Significant Differences"
+  ) |> 
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
+    locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
+  )
+mpemba_t_final |> gtsave( "mpemba_t_final_2.docx")
 
 

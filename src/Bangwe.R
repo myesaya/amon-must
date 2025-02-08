@@ -20,8 +20,26 @@ library(broom)
 
 microbiology<- read_csv(here::here("data/raw/sorted.csv")) |> 
   clean_names() |> 
-  mutate_if(is.character, as_factor) |> 
-  select(id:microbe)
+  mutate_if(is.character, as_factor) 
+
+#re code factors to new names
+
+microbiology<-microbiology |> 
+  mutate(
+    farm=fct_recode(farm,
+                    "farm 1"= "Bangwe",
+                    "farm 2"="Chigumula",
+                    "farm 3" = "Mpemba",
+                    "farm 4" = "Chileka1",
+                    "farm 5" = "Chileka2"
+    )
+  ) |> 
+  mutate(farm=factor(farm, 
+                     levels = c("farm 1",
+                                "farm 2",
+                                "farm 3",
+                                "farm 4",
+                                "farm 5")))  
 
 
 
@@ -29,7 +47,7 @@ microbiology<- read_csv(here::here("data/raw/sorted.csv")) |>
 #I will start by assessing statistical significnce on the presence of different microbes
 
 Bangwe<-microbiology |> 
-  filter(farm == "Bangwe") 
+  filter(farm == "farm 1") 
 
 # Step 1: Calculate Mean Inhibition and Standard Error
 summary_data <- Bangwe |> 
@@ -45,23 +63,40 @@ print(summary_data)
 
 # Step 4: Create Line Graph with ggplot2
 line_plot <- ggplot(summary_data, aes(x = item, y = mean_inhibition, group = 1)) +
-  geom_line() +
+  geom_line(size = 0.8) +
   geom_point(size = 3) +
-  geom_errorbar(aes(ymin = mean_inhibition - se_inhibition, ymax = mean_inhibition + se_inhibition), width = 0.2) +
+  geom_errorbar(aes(ymin = mean_inhibition - se_inhibition, ymax = mean_inhibition + se_inhibition), width = 0.2, size = 1.0) +
   geom_text(aes(label = round(mean_inhibition, 2)), vjust = -1, size = 5) + # Add mean values as text labels
-  labs(title = "Microbial Inhibition Across Sample Types (Bangwe)",
+  labs(title = "Mean Microbial Inhibition Across Sample Types (Farm 1)",
        x = "Sample Type (Manure, Soil, Vegetables)",
        y = "Mean Inhibition") +
   theme_minimal()+
   theme(
-    axis.title.x = element_text(size = 14), # Increase font size for x-axis title
-    axis.title.y = element_text(size = 14), # Increase font size for y-axis title
-    axis.text.x = element_text(size = 12, angle = 10, hjust = 1),   # Increase font size for x-axis categories (tick labels)
-    axis.text.y = element_text(size = 12)     # Increase font size for y-axis categories (tick labels)
-  )
+    axis.title.x = element_text(size = 16), # Increase font size for x-axis title
+    axis.title.y = element_text(size = 16), # Increase font size for y-axis title
+    axis.text.x = element_text(size = 14, angle = 10, hjust = 1,color = "black"),   # Increase font size for x-axis categories (tick labels)
+    axis.text.y = element_text(size = 14,color = "black"),     # Increase font size for y-axis categories (tick labels)
+    plot.title = element_text(face = "bold", size = 16)  )
+
+my_theme<- theme(
+  axis.title.x = element_text(size = 16), # Increase font size for x-axis title
+  axis.title.y = element_text(size = 16), # Increase font size for y-axis title
+  axis.text.x = element_text(size = 14, angle = 10, hjust = 1,color = "black"),   # Increase font size for x-axis categories (tick labels)
+  axis.text.y = element_text(size = 14,color = "black"),     # Increase font size for y-axis categories (tick labels)
+  plot.title = element_text(face = "bold", size = 16)  )
+
+
 
 # Display the plot
 print(line_plot)
+
+
+
+
+
+
+
+
 
 
 #I want to do anova 
@@ -105,7 +140,7 @@ anova_table <- anova_results %>%
 print(anova_table)
 
 
-anova_table |> gtsave("anova.docx")
+anova_table |> gtsave("Bangwe-anova.docx")
 
 
 # Step 2: Run Tukey's HSD Test
@@ -126,7 +161,7 @@ result_table <- result_table %>%
 final<-result_table |> 
   filter(Adjusted_p_value<0.05) 
 
-final %>%
+turkey<-final %>%
   mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
   gt() %>%
   tab_header(
@@ -136,8 +171,167 @@ final %>%
     footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
     locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
   )
+turkey |> gtsave("Bangwe-turkey.docx")
 
 
 
+# 3-way ANOVA -------------------------------------------------------------
 
+# Step 2: Run Tukey's HSD Test
+tukey_result <- TukeyHSD(model)
+
+
+result_table <- as_tibble(tukey_result$`antibiotic`, rownames = "Comparison")
+
+# Step 2: Rename columns for clarity
+result_table <- result_table %>%
+  rename(
+    Difference = diff,
+    Lower_CI = lwr,
+    Upper_CI = upr,
+    Adjusted_p_value = `p adj`
+  )
+
+final<-result_table |> 
+  filter(Adjusted_p_value<0.05) 
+
+turkey<-final %>%
+  mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
+  gt() %>%
+  tab_header(
+    title = "Significant Differences"
+  ) |> 
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
+    locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
+  )
+turkey |> gtsave("Bangwe-antibiotic-turkey.docx")
+
+#I now want the inhibition mean, se and n for each antibiotic
+#is there a diference in the concentration of ECOLI in vegetables across all?
+
+#I want to do anova 
+# Two way ANOVA
+model <- aov(inhibition ~ item , data = Bangwe)
+#tidy anova results
+anova_results <- tidy(model)
+
+format_p_value <- function(p) {
+  if (is.na(p)) {
+    return("NA")  # Handle NA values gracefully
+  } else if (p < 0.001) {
+    return("< 0.001 ***")
+  } else if (p < 0.01) {
+    return(paste0(round(p, 3), " **"))
+  } else if (p < 0.05) {
+    return(paste0(round(p, 3), " *"))
+  } else {
+    return(round(p, 3))
+  }
+}
+
+anova_table <- anova_results %>%
+  mutate(p.value = sapply(p.value, format_p_value)) %>%  # Format p-values
+  gt() %>%
+  tab_header(
+    title = "Test Results"
+  ) %>%
+  cols_label(
+    term = "Source of Variation",
+    df = "Degrees of Freedom",
+    statistic = "F-Statistic",
+    p.value = "P-Value"
+  ) %>%
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05",
+    locations = cells_column_labels(columns = p.value)  # Specify where to place the footnote
+  )
+
+# Display the table
+print(anova_table)
+
+
+anova_table |> gtsave("Bangwe-anova.docx")
+
+
+# Step 2: Run Tukey's HSD Test
+tukey_result <- TukeyHSD(model)
+
+
+result_table <- as_tibble(tukey_result$`antibiotic:item`, rownames = "Comparison")
+
+# Step 2: Rename columns for clarity
+result_table <- result_table %>%
+  rename(
+    Difference = diff,
+    Lower_CI = lwr,
+    Upper_CI = upr,
+    Adjusted_p_value = `p adj`
+  )
+
+final<-result_table |> 
+  filter(Adjusted_p_value<0.05) 
+
+turkey<-final %>%
+  mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
+  gt() %>%
+  tab_header(
+    title = "Significant Differences"
+  ) |> 
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
+    locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
+  )
+turkey |> gtsave("Bangwe-turkey.docx")
+
+
+
+# 3-way ANOVA -------------------------------------------------------------
+
+# Step 2: Run Tukey's HSD Test
+tukey_result <- TukeyHSD(model)
+
+
+result_table <- as_tibble(tukey_result$`antibiotic`, rownames = "Comparison")
+
+# Step 2: Rename columns for clarity
+result_table <- result_table %>%
+  rename(
+    Difference = diff,
+    Lower_CI = lwr,
+    Upper_CI = upr,
+    Adjusted_p_value = `p adj`
+  )
+
+final<-result_table |> 
+  filter(Adjusted_p_value<0.05) 
+
+turkey<-final %>%
+  mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
+  gt() %>%
+  tab_header(
+    title = "Significant Differences"
+  ) |> 
+  tab_footnote(
+    footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
+    locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
+  )
+turkey |> gtsave("Bangwe-antibiotic-turkey.docx")
+
+
+Bangwe %>%
+  group_by(item) %>%
+  summarise(
+    mean_inhibition = mean(inhibition, na.rm = TRUE),
+    se_inhibition = sd(inhibition, na.rm = TRUE) / sqrt(n()),
+    n = n()
+  )
+
+one <- Bangwe |> 
+  filter(microbe == "E. coli" | microbe == "Klebsiella pneumoniae") |> 
+  select(item, inhibition,microbe)
+
+  
+one |>  
+  tbl_summary() 
 

@@ -49,5 +49,5 @@ gt_table <- summary_data |>
   )
 
 # Display the gt table
-gt_table
+gt_table |> gtsave("gt_table.docx")
 

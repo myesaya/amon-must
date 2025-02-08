@@ -49,7 +49,7 @@ line_plot <- ggplot(summary_data, aes(x = item, y = mean_inhibition, group = 1))
   geom_point(size = 3) +
   geom_errorbar(aes(ymin = mean_inhibition - se_inhibition, ymax = mean_inhibition + se_inhibition), width = 0.2) +
   geom_text(aes(label = round(mean_inhibition, 2)), vjust = -1, size = 5) + # Add mean values as text labels
-  labs(title = "Microbial Inhibition Across Sample Types (Chileka1)",
+  labs(title = "Microbial Inhibition Across Sample Types (Farm 4)",
        x = "Sample Type (Manure, Soil, Vegetables)",
        y = "Mean Inhibition") +
   theme_minimal()+
@@ -58,7 +58,8 @@ line_plot <- ggplot(summary_data, aes(x = item, y = mean_inhibition, group = 1))
     axis.title.y = element_text(size = 14), # Increase font size for y-axis title
     axis.text.x = element_text(size = 12, angle = 10, hjust = 1),   # Increase font size for x-axis categories (tick labels)
     axis.text.y = element_text(size = 12)     # Increase font size for y-axis categories (tick labels)
-  )
+  )+
+  my_theme
 
 # Display the plot
 print(line_plot)
@@ -105,7 +106,7 @@ anova_table <- anova_results %>%
 print(anova_table)
 
 
-anova_table |> gtsave("anova.docx")
+anova_table |> gtsave("chieka1-anova.docx")
 
 
 # Step 2: Run Tukey's HSD Test
@@ -126,7 +127,7 @@ result_table <- result_table %>%
 final<-result_table |> 
   filter(Adjusted_p_value<0.05) 
 
-final %>%
+chileka1_t<-final %>%
   mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
   gt() %>%
   tab_header(
@@ -137,7 +138,7 @@ final %>%
     locations = cells_column_labels(columns = Adjusted_p_value)  # Specify where to place the footnote
   )
 
-
+chileka1_t |> gtsave('chileka1_t.docx')
 
 
 
