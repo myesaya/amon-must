@@ -161,6 +161,107 @@ make_profile <- function(row) {
   paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
 }
 
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(
+    `Resistance Profile` = make_profile(cur_data())
+  ) %>%
+  ungroup()
+
+# Step 7: Add total row - FIXED TYPE CONVERSION
+total_isolates <- isolate_counts %>%
+  summarise(total = sum(Isolates_n)) %>%
+  pull(total)
+
+
+total_row <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(resistance_percent = round(mean(sensitivity == "R") * 100)) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0) %>%
+  mutate(
+    microbe = paste0("Total Chicken (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+
+# Step 8: Bind rows - now compatible types
+final_table <- bind_rows(
+  table_data %>% mutate(Isolates_n = as.integer(Isolates_n)),
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+chicken<-gt(final_table) %>%
+  tab_header(
+    title = "Chicken Manure Resistance",
+    subtitle = "High gentamicin resistance in Klebsiella isolates"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = "microbe") %>%
+  cols_align("left", columns = everything())
+
+chicken
+
+
+chicken |> gtsave("Chicken Manure.docx")
+
+
+##############manure
+library(dplyr)
+library(tidyr)
+library(gt)
+
+# Step 1: Filter only pig manure
+chicken_data <- microbiology %>%
+  filter(item == "Pig manure")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c( "SXT", "CIP", "TGC", "CTX", "AMP", "GM",  "MEM", "ATM", "CRO", "VAN")
+
+levels(microbiology$antibiotic)
+# Step 3: Calculate resistance % per microbe per antibiotic
+resistance_summary <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    n_isolates = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0)
+
+print(names(resistance_summary))
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- chicken_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  group_by(microbe) %>%
+  summarise(
+    Isolates_n = max(Isolates_n),
+    across(all_of(selected_abx), ~ max(.x, na.rm = TRUE), .names = "{.col}"),
+    .groups = "drop"
+  )
+
+
+
+# Step 6: Generate resistance profile text
+make_profile <- function(row) {
+  abx_cols <- intersect(names(row), selected_abx)
+  res_abx <- abx_cols[which(as.numeric(row[abx_cols]) == 100)]
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
+}
 
 table_data <- table_data %>%
   rowwise() %>%
@@ -209,9 +310,494 @@ chicken<-gt(final_table) %>%
 
 chicken
 
-gtsave(chicken, filename = "Chicken Manure.docx")
+
+chicken |> gtsave("Pig Manure.docx")
+##pig manure was created but not saved
+
+# Home soil ---------------------------------------------------------------
+
+# Step 1: Filter only home soil
+chicken_data <- microbiology %>%
+  filter(item == "Home soil")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c( "SXT", "CIP", "TGC", "CTX", "AMP", "GM", "ATM", "CRO", "VAN")
+
+levels(microbiology$antibiotic)
+# Step 3: Calculate resistance % per microbe per antibiotic
+resistance_summary <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    n_isolates = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0)
+
+print(names(resistance_summary))
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- chicken_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  group_by(microbe) %>%
+  summarise(
+    Isolates_n = max(Isolates_n),
+    across(all_of(selected_abx), ~ max(.x, na.rm = TRUE), .names = "{.col}"),
+    .groups = "drop"
+  )
 
 
+
+# Step 6: Generate resistance profile text
+make_profile <- function(row) {
+  abx_cols <- intersect(names(row), selected_abx)
+  res_abx <- abx_cols[which(as.numeric(row[abx_cols]) == 100)]
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(
+    `Resistance Profile` = make_profile(cur_data())
+  ) %>%
+  ungroup()
+
+# Step 7: Add total row - FIXED TYPE CONVERSION
+total_isolates <- isolate_counts %>%
+  summarise(total = sum(Isolates_n)) %>%
+  pull(total)
+
+
+total_row <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(resistance_percent = round(mean(sensitivity == "R") * 100)) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0) %>%
+  mutate(
+    microbe = paste0("Total Chicken (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+
+# Step 8: Bind rows - now compatible types
+final_table <- bind_rows(
+  table_data %>% mutate(Isolates_n = as.integer(Isolates_n)),
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+chicken<-gt(final_table) %>%
+  tab_header(
+    title = "Home soil Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = "microbe") %>%
+  cols_align("left", columns = everything())
+
+chicken
+
+
+chicken |> gtsave("Home Soil.docx")
+
+
+# Farm soil ---------------------------------------------------------------
+
+
+chicken_data <- microbiology %>%
+  filter(item == "Farm soil")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c( "SXT", "CIP", "TGC", "CTX", "AMP", "GM", "ATM", "CRO", "VAN")
+
+levels(microbiology$antibiotic)
+# Step 3: Calculate resistance % per microbe per antibiotic
+resistance_summary <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    n_isolates = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0)
+
+print(names(resistance_summary))
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- chicken_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  group_by(microbe) %>%
+  summarise(
+    Isolates_n = max(Isolates_n),
+    across(all_of(selected_abx), ~ max(.x, na.rm = TRUE), .names = "{.col}"),
+    .groups = "drop"
+  )
+
+
+
+# Step 6: Generate resistance profile text
+make_profile <- function(row) {
+  abx_cols <- intersect(names(row), selected_abx)
+  res_abx <- abx_cols[which(as.numeric(row[abx_cols]) == 100)]
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(
+    `Resistance Profile` = make_profile(cur_data())
+  ) %>%
+  ungroup()
+
+# Step 7: Add total row - FIXED TYPE CONVERSION
+total_isolates <- isolate_counts %>%
+  summarise(total = sum(Isolates_n)) %>%
+  pull(total)
+
+
+total_row <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(resistance_percent = round(mean(sensitivity == "R") * 100)) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0) %>%
+  mutate(
+    microbe = paste0("Total Farm soil (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+
+# Step 8: Bind rows - now compatible types
+final_table <- bind_rows(
+  table_data %>% mutate(Isolates_n = as.integer(Isolates_n)),
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+chicken<-gt(final_table) %>%
+  tab_header(
+    title = "Farm soil Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = "microbe") %>%
+  cols_align("left", columns = everything())
+
+chicken
+
+
+chicken |> gtsave("Farm Soil.docx")
+
+# Rape --------------------------------------------------------------------
+
+# Step 1: Filter only Rape
+chicken_data <- microbiology %>%
+  filter(item == "Rape")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c( "SXT", "CIP", "TGC", "CTX", "AMP", "GM",   "ATM", "CRO", "VAN")
+
+levels(microbiology$antibiotic)
+# Step 3: Calculate resistance % per microbe per antibiotic
+resistance_summary <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    n_isolates = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0)
+
+print(names(resistance_summary))
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- chicken_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  group_by(microbe) %>%
+  summarise(
+    Isolates_n = max(Isolates_n),
+    across(all_of(selected_abx), ~ max(.x, na.rm = TRUE), .names = "{.col}"),
+    .groups = "drop"
+  )
+
+
+
+# Step 6: Generate resistance profile text
+make_profile <- function(row) {
+  abx_cols <- intersect(names(row), selected_abx)
+  res_abx <- abx_cols[which(as.numeric(row[abx_cols]) == 100)]
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(
+    `Resistance Profile` = make_profile(cur_data())
+  ) %>%
+  ungroup()
+
+# Step 7: Add total row - FIXED TYPE CONVERSION
+total_isolates <- isolate_counts %>%
+  summarise(total = sum(Isolates_n)) %>%
+  pull(total)
+
+
+total_row <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(resistance_percent = round(mean(sensitivity == "R") * 100)) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0) %>%
+  mutate(
+    microbe = paste0("Total Rape (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+
+# Step 8: Bind rows - now compatible types
+final_table <- bind_rows(
+  table_data %>% mutate(Isolates_n = as.integer(Isolates_n)),
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+chicken<-gt(final_table) %>%
+  tab_header(
+    title = "Rape Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = "microbe") %>%
+  cols_align("left", columns = everything())
+
+chicken
+
+
+chicken |> gtsave("Rape.docx")
+
+# Chinese cabbage ---------------------------------------------------------
+# Step 1: Filter only Chinese
+chicken_data <- microbiology %>%
+  filter(item == "Chinese Cabbage")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c( "SXT", "CIP", "TGC", "CTX", "AMP", "GM")
+
+levels(microbiology$antibiotic)
+# Step 3: Calculate resistance % per microbe per antibiotic
+resistance_summary <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    n_isolates = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0)
+
+print(names(resistance_summary))
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- chicken_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  group_by(microbe) %>%
+  summarise(
+    Isolates_n = max(Isolates_n),
+    across(all_of(selected_abx), ~ max(.x, na.rm = TRUE), .names = "{.col}"),
+    .groups = "drop"
+  )
+
+
+
+# Step 6: Generate resistance profile text
+make_profile <- function(row) {
+  abx_cols <- intersect(names(row), selected_abx)
+  res_abx <- abx_cols[which(as.numeric(row[abx_cols]) == 100)]
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(
+    `Resistance Profile` = make_profile(cur_data())
+  ) %>%
+  ungroup()
+
+# Step 7: Add total row - FIXED TYPE CONVERSION
+total_isolates <- isolate_counts %>%
+  summarise(total = sum(Isolates_n)) %>%
+  pull(total)
+
+
+total_row <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(resistance_percent = round(mean(sensitivity == "R") * 100)) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0) %>%
+  mutate(
+    microbe = paste0("Total Chinese (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+
+# Step 8: Bind rows - now compatible types
+final_table <- bind_rows(
+  table_data %>% mutate(Isolates_n = as.integer(Isolates_n)),
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+chicken<-gt(final_table) %>%
+  tab_header(
+    title = "Chinese Cabbage Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = "microbe") %>%
+  cols_align("left", columns = everything())
+
+chicken
+
+
+chicken |> gtsave("Chinese.docx")
+
+# Amaranthus --------------------------------------------------------------
+# Step 1: Filter only amaranthus
+chicken_data <- microbiology %>%
+  filter(item == "Amaranthus")
+
+# Step 2: Define antibiotics of interest
+# Step 2: Define antibiotics of interest
+selected_abx <- c( "SXT", "CIP", "TGC", "CTX", "AMP", "GM", "ATM", "CRO", "VAN")
+
+levels(microbiology$antibiotic)
+# Step 3: Calculate resistance % per microbe per antibiotic
+resistance_summary <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    n_isolates = n(),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0)
+
+print(names(resistance_summary))
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- chicken_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  group_by(microbe) %>%
+  summarise(
+    Isolates_n = max(Isolates_n),
+    across(all_of(selected_abx), ~ max(.x, na.rm = TRUE), .names = "{.col}"),
+    .groups = "drop"
+  )
+
+
+
+# Step 6: Generate resistance profile text
+make_profile <- function(row) {
+  abx_cols <- intersect(names(row), selected_abx)
+  res_abx <- abx_cols[which(as.numeric(row[abx_cols]) == 100)]
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", row[["Isolates_n"]], "/", row[["Isolates_n"]], ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(
+    `Resistance Profile` = make_profile(cur_data())
+  ) %>%
+  ungroup()
+
+# Step 7: Add total row - FIXED TYPE CONVERSION
+total_isolates <- isolate_counts %>%
+  summarise(total = sum(Isolates_n)) %>%
+  pull(total)
+
+
+total_row <- chicken_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(resistance_percent = round(mean(sensitivity == "R") * 100)) %>%
+  pivot_wider(names_from = antibiotic, values_from = resistance_percent, values_fill = 0) %>%
+  mutate(
+    microbe = paste0("Total Amaranthus (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+
+# Step 8: Bind rows - now compatible types
+final_table <- bind_rows(
+  table_data %>% mutate(Isolates_n = as.integer(Isolates_n)),
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+chicken<-gt(final_table) %>%
+  tab_header(
+    title = "Amaranthus Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = "microbe") %>%
+  cols_align("left", columns = everything())
+
+chicken
+
+
+chicken |> gtsave("Amaranthus.docx")
 
 
 
