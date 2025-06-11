@@ -48,6 +48,21 @@ gt_table <- summary_data |>
     locations = cells_body(columns = vars(microbe)) # Apply to the body of the Microbe column
   )
 
+
+gt_table
 # Display the gt table
 gt_table |> gtsave("gt_table.docx")
 
+
+
+
+microbiology |> 
+  filter(item == "Chicken manure", 
+         str_detect(microbe, "E\\.? coli")) |>  
+  summarise(n = n())                            # Count rows
+
+levels(microbiology$microbe) # Check levels of the microbe factor)
+
+microbiology |> 
+  filter(item == "Chicken manure") |>  
+  summarise(n = n())                   
