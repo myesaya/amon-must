@@ -292,3 +292,271 @@ turkey<-final %>%
   )
 turkey |> gtsave("Bangwe-antibiotic-turkey.docx")
 
+
+# new tests ---------------------------------------------------------------
+
+library(tidyverse)
+
+# Step 1: Distinct microbes per farm and sample type
+microbe_presence <- microbiology %>%
+  filter(sample %in% c("Manure", "Soil", "Vegetable")) %>%
+  distinct(farm, sample, microbe)  # Remove duplicate microbes per sample
+
+# Step 2: Calculate pairwise Jaccard indices (similarity) within farms
+results <- microbe_presence %>%
+  group_by(farm) %>%
+  summarise(
+    # Manure-Soil similarity
+    manure_soil = ifelse(
+      "Manure" %in% sample & "Soil" %in% sample,
+      length(intersect(
+        microbe[sample == "Manure"], 
+        microbe[sample == "Soil"]
+      )) / length(union(
+        microbe[sample == "Manure"], 
+        microbe[sample == "Soil"]
+      )),
+      NA
+    ),
+    
+    # Manure-Vegetable similarity
+    manure_veg = ifelse(
+      "Manure" %in% sample & "Vegetable" %in% sample,
+      length(intersect(
+        microbe[sample == "Manure"], 
+        microbe[sample == "Vegetable"]
+      )) / length(union(
+        microbe[sample == "Manure"], 
+        microbe[sample == "Vegetable"]
+      )),
+      NA
+    ),
+    
+    # Soil-Vegetable similarity
+    soil_veg = ifelse(
+      "Soil" %in% sample & "Vegetable" %in% sample,  # Fix typo: "Vegetable"
+      length(intersect(
+        microbe[sample == "Soil"], 
+        microbe[sample == "Vegetable"]
+      )) / length(union(
+        microbe[sample == "Soil"], 
+        microbe[sample == "Vegetable"]
+      )),
+      NA
+    )
+  ) %>%
+  ungroup()
+
+# Step 3: Summarize results
+summary_stats <- results %>%
+  summarise(
+    mean_manure_soil = mean(manure_soil, na.rm = TRUE),
+    mean_manure_veg = mean(manure_veg, na.rm = TRUE),
+    mean_soil_veg = mean(soil_veg, na.rm = TRUE)
+  )
+
+# Step 4: Identify key shared microbes
+shared_microbes <- microbe_presence %>%
+  group_by(microbe) %>%
+  summarise(
+    in_manure = any(sample == "Manure"),
+    in_soil = any(sample == "Soil"),
+    in_vegetable = any(sample == "Vegetable")
+  ) %>%
+  filter(in_manure & in_soil & in_vegetable)  # Microbes in all 3 types
+
+# View results
+print(summary_stats)
+print(shared_microbes)
+######################################
+# Load required packages
+library(tidyverse)
+library(boot)
+
+# Prepare the data (assuming 'microbiology' is already loaded)
+microbe_presence <- microbiology %>%
+  # Clean sample names and filter relevant types
+  mutate(sample = str_trim(sample)) %>%
+  filter(sample %in% c("Manure", "Soil", "Vegetable")) %>%
+  # Get distinct microbes per farm and sample type
+  distinct(farm, sample, microbe)
+
+# Function to calculate Jaccard index
+jaccard <- function(set1, set2) {
+  intersection = length(intersect(set1, set2))
+  union = length(union(set1, set2))
+  if(union == 0) return(NA_real_)
+  return(intersection/union)
+}
+
+# Calculate pairwise Jaccard indices per farm
+farm_jaccard <- microbe_presence %>%
+  group_by(farm) %>%
+  summarise(
+    manure_soil = jaccard(
+      microbe[sample == "Manure"],
+      microbe[sample == "Soil"]
+    ),
+    manure_veg = jaccard(
+      microbe[sample == "Manure"],
+      microbe[sample == "Vegetable"]
+    ),
+    soil_veg = jaccard(
+      microbe[sample == "Soil"],
+      microbe[sample == "Vegetable"]
+    )
+  ) %>%
+  ungroup()
+
+# Bootstrapping function for CI estimation
+bootstrap_ci <- function(data, variable, n_boot = 5000) {
+  # Remove NA values
+  clean_data <- data[[variable]][!is.na(data[[variable]])]
+  if(length(clean_data) < 2) return(tibble(mean = NA, lower_ci = NA, upper_ci = NA))
+  
+  # Perform bootstrapping
+  boots <- boot(
+    data = clean_data,
+    statistic = function(x, i) mean(x[i]),
+    R = n_boot
+  )
+  
+  # Get BCa confidence interval
+  ci <- tryCatch(
+    boot.ci(boots, type = "bca"),
+    error = function(e) NULL
+  )
+  
+  if(is.null(ci)) {
+    return(tibble(mean = mean(clean_data), lower_ci = NA, upper_ci = NA))
+  }
+  
+  tibble(
+    mean = mean(clean_data),
+    lower_ci = ci$bca[4],
+    upper_ci = ci$bca[5]
+  )
+}
+
+# Calculate statistics for each comparison
+comparisons <- c("manure_soil", "manure_veg", "soil_veg")
+results <- map_dfr(comparisons, ~{
+  ci_result <- bootstrap_ci(farm_jaccard, .x)
+  ci_result %>%
+    mutate(
+      comparison = .x,
+      # One-sample t-test against null (Jaccard = 0)
+      t_test = t.test(
+        farm_jaccard[[.x]], 
+        alternative = "greater",
+        mu = 0,
+        na.action = na.omit
+      )$p.value,
+      # Interpret strength
+      strength = case_when(
+        mean < 0.1 ~ "Very Weak",
+        mean < 0.3 ~ "Weak",
+        mean < 0.5 ~ "Moderate",
+        mean < 0.7 ~ "Strong",
+        TRUE ~ "Very Strong"
+      )
+    )
+}) %>%
+  select(comparison, everything())
+
+# Print results
+cat("Farm-level Jaccard Indices:\n")
+print(farm_jaccard, n = Inf)
+
+cat("\nStatistical Summary:\n")
+print(results)
+
+#################################
+# Load required packages
+library(tidyverse)
+library(boot)
+
+# Prepare the data (assuming 'microbiology' is already loaded)
+microbe_presence <- microbiology %>%
+  mutate(sample = str_trim(sample)) %>%
+  filter(sample %in% c("Manure", "Soil", "Vegetable")) %>%
+  distinct(farm, sample, microbe)
+
+# Jaccard function
+jaccard <- function(set1, set2) {
+  intersection = length(intersect(set1, set2))
+  union = length(union(set1, set2))
+  if(union == 0) return(NA_real_)
+  return(intersection / union)
+}
+
+# Calculate pairwise Jaccard indices per farm
+farm_jaccard <- microbe_presence %>%
+  group_by(farm) %>%
+  summarise(
+    manure_soil = jaccard(
+      microbe[sample == "Manure"],
+      microbe[sample == "Soil"]
+    ),
+    manure_veg = jaccard(
+      microbe[sample == "Manure"],
+      microbe[sample == "Vegetable"]
+    ),
+    soil_veg = jaccard(
+      microbe[sample == "Soil"],
+      microbe[sample == "Vegetable"]
+    ),
+    .groups = 'drop'
+  )
+
+# Bootstrap function with full t-test extraction
+bootstrap_ci <- function(x, n_boot = 5000) {
+  x <- na.omit(x)
+  if(length(x) < 2) return(tibble(mean = NA, lower_ci = NA, upper_ci = NA, t_value = NA, p_value = NA))
+  
+  # Bootstrapping for CI
+  boots <- boot(
+    data = x,
+    statistic = function(data, i) mean(data[i]),
+    R = n_boot
+  )
+  
+  ci <- tryCatch(
+    boot.ci(boots, type = "bca"),
+    error = function(e) NULL
+  )
+  
+  # One-sample t-test
+  ttest <- t.test(x, alternative = "greater", mu = 0)
+  
+  tibble(
+    mean = mean(x),
+    lower_ci = if(!is.null(ci)) ci$bca[4] else NA,
+    upper_ci = if(!is.null(ci)) ci$bca[5] else NA,
+    t_value = ttest$statistic,
+    p_value = ttest$p.value
+  )
+}
+
+# Apply to each comparison
+comparisons <- c("manure_soil", "manure_veg", "soil_veg")
+
+results <- map_dfr(comparisons, function(comp) {
+  stats <- bootstrap_ci(farm_jaccard[[comp]])
+  stats %>%
+    mutate(
+      comparison = comp,
+      strength = case_when(
+        mean < 0.1 ~ "Very Weak",
+        mean < 0.3 ~ "Weak",
+        mean < 0.5 ~ "Moderate",
+        mean < 0.7 ~ "Strong",
+        TRUE ~ "Very Strong"
+      )
+    )
+}) %>%
+  select(comparison, mean, lower_ci, upper_ci, t_value, p_value, strength)
+
+# Print results
+print(results)
+

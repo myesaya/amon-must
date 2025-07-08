@@ -20,6 +20,8 @@ survey_df<- read_csv(here::here("data/raw/Antibiotic_Usage_Practices_among_Pig_a
   clean_names() |> 
   mutate_if(is.character, as_factor) 
 
+levels(microbiology$farm)
+
 survey_df<- survey_df |> 
   mutate(
     years_farming_cat = case_when(
@@ -886,42 +888,61 @@ library(tidyverse)
 
 # Transform data
 products <- survey_df |> 
-  select(starts_with("product")) |> 
+  select(starts_with("product"), often,id) |> 
   mutate(across(everything(), ~ ifelse(. == 1, "Yes", "No")))
+
+# Reshape to long format and rename product names using fct_recode()
+library(tidyverse)
 
 # Reshape to long format and rename product names using fct_recode()
 products_long <- products |> 
   pivot_longer(cols = everything(), names_to = "Product", values_to = "Response") |> 
   mutate(Product = fct_recode(Product,
-                              "Antibiotics" = "products_antibiotics", 
+                              "Antibiotics" = "often", 
                               "Vaccines" = "products_vaccines", 
                               "Herbals" = "products_erbal",
-                              "None" = "products_none"))  # Rename products
+                              "None" = "products_none")) 
 
-# Calculate percentage of "Yes" responses per product
-yes_counts <- products_long |> 
-  filter(Response == "Yes") |> 
-  group_by(Product) |> 
-  summarise(n = n(), percent = (n / nrow(survey_df)) * 100)  # Compute percentage per product
+# If you have an id column, calculate total respondents based on unique ids:
+# If not, just use total rows
+if("id" %in% names(products_long)) {
+  total_n <- n_distinct(products_long$id)
+} else {
+  total_n <- nrow(products_long) / length(unique(products_long$Product)) # assuming wide data reshaped to long
+}
 
-# Plot with highest percentage first and Y-axis reaching 100%
-ggplot(yes_counts, aes(x = fct_reorder(Product, percent, .desc = TRUE), y = percent, fill = Product)) + 
-  geom_col(width = 0.6) +
-  geom_text(aes(label = sprintf("%.1f%%", percent)),  
-            vjust = -0.5, size = 6, fontface = "bold") +  
-  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +  # Ensure Y-axis goes up to 100%
+# Calculate summary for "Yes" responses per Product
+summary_data <- products_long |>
+  filter(Response == "Yes") |>
+  group_by(Product) |>
+  summarise(
+    Count = n(),
+    Percentage = (Count / total_n) * 100,
+    SE = sqrt((Percentage / 100) * (1 - Percentage / 100) / total_n) * 100,
+    .groups = 'drop'
+  ) |> 
+  filter(Percentage >= 1)  # remove categories with <1%
+
+# Plot with error bars and text above SE
+ggplot(summary_data, aes(x = fct_reorder(Product, Percentage, .desc = TRUE), y = Percentage, fill = Product)) + 
+  geom_col(width = 0.4) +
+  geom_errorbar(aes(ymin = Percentage - SE, ymax = Percentage + SE), width = 0.2, color = "black") +
+  geom_text(aes(y = Percentage + SE + 2, label = sprintf("%.1f%%", Percentage)),  
+            size = 6, fontface = "bold") +  
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +  
   labs(title = "Products Used",
        x = "Product",
        y = "Percentage (%)") +
   theme_classic() +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 16, face = "bold", color = "black"),  # Black title
-    axis.title.x = element_text(hjust = 0.5, size = 14, color = "black",face = "bold"),  # Black X-axis title
-    axis.title.y = element_text(hjust = 0.5, size = 14, color = "black"),  # Black Y-axis title
-    axis.text.x = element_text(size = 13, color = "black"),  # Black X-axis text
-    axis.text.y = element_text(size = 13, color = "black")   # Black Y-axis text
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold", color = "black"),  
+    axis.title.x = element_text(hjust = 0.5, size = 14, color = "black", face = "bold"),  
+    axis.title.y = element_text(hjust = 0.5, size = 14, color = "black"),  
+    axis.text.x = element_text(size = 13, color = "black"),  
+    axis.text.y = element_text(size = 13, color = "black")   
   ) +
-  guides(fill = "none")  # Remove legend since colors are for distinction
+  guides(fill = "none")  
+
 
 #******************************************************
 library(dplyr)
@@ -1127,51 +1148,51 @@ ggplot(summary, aes(area = percentage, fill = consult_health, label = consult_he
 
 
 #########################################################where
-where<-survey_df |>
-  select(starts_with("where")) 
 
+amr<-survey_df |>
+  select("misuse_amr")
+library(tidyverse)
 
-where_long<-where |> 
-  pivot_longer(cols =  where_purchase_veterinarian:where_purchase_other,
+# Select relevant columns
+where <- survey_df |> select(starts_with("where"))
+
+# Reshape to long format
+where_long <- where |> 
+  pivot_longer(cols = where_purchase_veterinarian:where_purchase_other,
                names_to = "Variable", values_to = "Response")
 
+# Total number of respondents
+total_n <- nrow(where)  # assuming one row per respondent
 
-
-
-###########plot######################
-
-yes_counts_percent <- where_long %>%
-  filter(!is.na(Response)) %>%  # Exclude NA values
+# Summarize percentages and calculate SE
+summary_where <- where_long %>%
+  filter(!is.na(Response)) %>%
   group_by(Variable, Response) %>%
-  summarise(
-    Count = n(),
-    .groups = "drop"
-  ) |> 
+  summarise(Count = n(), .groups = "drop") %>%
   group_by(Variable) %>%
+  mutate(Percent = 100 * Count / sum(Count)) %>%
+  filter(Response == "1") %>%
+  ungroup() %>%
   mutate(
-    Percent = 100 * Count / sum(Count)  # Calculate percentage
-  ) %>%
-  filter(Response == "1") |>  # Filter for "Yes" responses only
-  ungroup() |> 
-  mutate(Variable = as.factor(Variable)) 
+    
+    SE = sqrt((Percent / 100) * (1 - Percent / 100) / total_n) * 100
+  )
 
-yes_counts_percent<-yes_counts_percent |> 
-  mutate(Variable=fct_recode(Variable,
-                            "Agrovet"="where_purchase_agrovet",
-                            "Other"="where_purchase_other",
-                            "Other"="where_purchase_vendors",
-                            "Veterinaian"="where_purchase_veterinarian"))
-                             
-                             
-                             
-                             
-# Plot the data
-ggplot(yes_counts_percent, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
-  geom_col( width = 0.65) +
-  geom_text(aes(label = sprintf("%.2f%%", Percent)), 
-            vjust = -0.5,
-            size = 5, 
-            fontface = "bold") +
+
+# Rename the Variable names
+summary_where <- summary_where |> 
+  mutate(Variable = fct_recode(Variable,
+                               "Agrovet" = "where_purchase_agrovet",
+                               "Other" = "where_purchase_other",
+                               "Other" = "where_purchase_vendors",
+                               "Veterinarian" = "where_purchase_veterinarian"))
+
+# Plot with error bars
+ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
+  geom_col(width = 0.4) +
+  geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
+  geom_text(aes(y = Percent + SE + 1, label = sprintf("%.2f%%", Percent)), 
+            size = 5, fontface = "bold") +
   scale_y_continuous(limits = c(0, 80), breaks = seq(0, 100, 20)) +
   labs(
     title = "Percentage of responses showing different Antibiotic sources",
@@ -1179,19 +1200,15 @@ ggplot(yes_counts_percent, aes(x = reorder(Variable, -Percent), y = Percent, fil
     y = "Percentages (%)"
   ) +
   theme_classic() +
-  theme(legend.position = "none") + # Remove legend
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, size=14, color = "black"),
-        axis.title.x=element_text(size=16,face="bold", color = "black"),
-        axis.text.y = element_text( hjust = 1, size=14, color = "black"),
-        axis.title.y=element_text(size=16,face="bold", color = "black"),
-        plot.title =  element_text(size=17,face="bold", color = "black")) # Rotate x-axis labels
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 14, color = "black"),
+    axis.title.x = element_text(size = 16, face = "bold", color = "black"),
+    axis.text.y = element_text(hjust = 1, size = 14, color = "black"),
+    axis.title.y = element_text(size = 16, face = "bold", color = "black"),
+    plot.title = element_text(size = 17, face = "bold", color = "black")
+  )
 
-
-
-
-
-amr<-survey_df |>
-  select("misuse_amr")
 
 # Ensure necessary libraries are loaded
 library(dplyr)
@@ -1801,4 +1818,449 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
    ) +
    guides(fill = "none") 
  
+ 
+ 
+ 
+ ################diseases
+ 
+ 
+ 
+ 
+ 
+ 
+ where <- survey_df |> 
+   select(starts_with("disease_chicken"))
+ 
+ 
+ # Reshape to long format
+ where_long <- where |> 
+   pivot_longer(
+     cols = starts_with("disease_chicken"),
+     names_to = "Variable",
+     values_to = "Response"
+   )
+ 
+ 
+ # Total number of respondents
+ total_n <- nrow(where)  # assuming one row per respondent
+ 
+ # Summarize percentages and calculate SE
+ summary_where <- where_long %>%
+   filter(!is.na(Response)) %>%
+   group_by(Variable, Response) %>%
+   summarise(Count = n(), .groups = "drop") %>%
+   group_by(Variable) %>%
+   mutate(Percent = 100 * Count / sum(Count)) %>%
+   filter(Response == "1") %>%
+   ungroup() %>%
+   mutate(
+     
+     SE = sqrt((Percent / 100) * (1 - Percent / 100) / total_n) * 100
+   )
+ 
+ where_long$Variable <- as.factor(where_long$Variable)  # Ensure Variable is a factor
+ levels(where_long$Variable)
+ 
+ # Rename the Variable names
+ summary_where <- summary_where |> 
+   mutate(Variable = fct_recode(Variable,
+                                "Cholera" = "disease_chicken_cholera",
+                                "Coryza" = "disease_chicken_coryza",
+                                "New Caste" = "disease_chicken_newcastle" ,
+                               "Worms" ="disease_chicken_worms",
+                                "Coccidiosis" = "disease_chicken_coccidiosis",
+                               "Infectious bursal" ="disease_chicken_infectious_bursal",
+                                
+                               " Parasites"="disease_chicken_parasites" ))
+ 
+ # Plot with error bars
+ ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
+   geom_col(width = 0.4) +
+   geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
+   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.2f%%", Percent)), 
+             size = 5, fontface = "bold") +
+   scale_y_continuous(limits = c(0, 70), breaks = seq(0, 100, 20)) +
+   labs(
+     title = "Percentage of responses on Chicken diseases",
+     x = "Diseases",
+     y = "Percentages (%)"
+   ) +
+   theme_classic() +
+   theme(
+     legend.position = "none",
+     axis.text.x = element_text(angle = 45, hjust = 1, size = 14, color = "black"),
+     axis.title.x = element_text(size = 16, face = "bold", color = "black"),
+     axis.text.y = element_text(hjust = 1, size = 14, color = "black"),
+     axis.title.y = element_text(size = 16, face = "bold", color = "black"),
+     plot.title = element_text(size = 17, face = "bold", color = "black")
+   )
+ 
+ 
+ #########pig
+ where <- survey_df |> 
+   select(starts_with("disease_pig"))
+ 
+ 
+ # Reshape to long format
+ where_long <- where |> 
+   pivot_longer(
+     cols = starts_with("disease_pig"),
+     names_to = "Variable",
+     values_to = "Response"
+   )
+ 
+ 
+ # Total number of respondents
+ total_n <- nrow(where)  # assuming one row per respondent
+ 
+ # Summarize percentages and calculate SE
+ summary_where <- where_long %>%
+   filter(!is.na(Response)) %>%
+   group_by(Variable, Response) %>%
+   summarise(Count = n(), .groups = "drop") %>%
+   group_by(Variable) %>%
+   mutate(Percent = 100 * Count / sum(Count)) %>%
+   filter(Response == "1") %>%
+   ungroup() %>%
+   mutate(
+     
+     SE = sqrt((Percent / 100) * (1 - Percent / 100) / total_n) * 100
+   )
+ 
+ where_long$Variable <- as.factor(where_long$Variable)  # Ensure Variable is a factor
+ levels(where_long$Variable)
+ 
+ # Rename the Variable names
+ summary_where <- summary_where |> 
+   mutate(Variable = fct_recode(Variable,
+                                "Diarrhoea" = "disease_pig_diarrhea"  ,
+                                "Bucellosis" ="disease_pig_brucellosis" ,
+                                "Foot and Mouth" =  "disease_pig_foot_mouth" ,
+                                "Scouring" ="disease_pig_scouring",
+                                "Mange" = "disease_pig_mange",
+                             
+                                "Erysipelas" ="disease_pig_swine_erysipelas",
+                                
+                               
+                                "Anthrax"="disease_pig_anthrax",
+                                "Malnutrition"="disease_pig_malnutrition",
+                                "Pneumonia"="disease_pig_pneumonia",
+                                "Swine dysentry"="disease_pig_swine_dysentery",
+                                "African swine"="disease_pigs_african_swine"))
+ 
+ # Plot with error bars
+ ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
+   geom_col(width = 0.45) +
+   geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
+   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.2f%%", Percent)), 
+             size = 5, fontface = "bold") +
+   scale_y_continuous(limits = c(0, 90), breaks = seq(0, 100, 20)) +
+   labs(
+     title = "Percentage of responses on Pig diseases",
+     x = "Diseases",
+     y = "Percentages (%)"
+   ) +
+   theme_classic() +
+   theme(
+     legend.position = "none",
+     axis.text.x = element_text(angle = 45, hjust = 1, size = 14, color = "black"),
+     axis.title.x = element_text(size = 16, face = "bold", color = "black"),
+     axis.text.y = element_text(hjust = 1, size = 14, color = "black"),
+     axis.title.y = element_text(size = 16, face = "bold", color = "black"),
+     plot.title = element_text(size = 17, face = "bold", color = "black")
+   )
+ 
+ 
+ ############### Microbial Correlation Analysis ###############
+ # Load required libraries
+ library(tidyverse)
+ library(broom)
+ library(gt)
+ 
+ # Clean the data
+ microbiology <- microbiology |> 
+   mutate(
+     sample = str_trim(sample),
+     sample = case_when(
+       str_detect(sample, regex("soil", ignore_case = TRUE)) ~ "Soil",
+       str_detect(sample, regex("manure", ignore_case = TRUE)) ~ "Manure",
+       str_detect(sample, regex("vegetable", ignore_case = TRUE)) ~ "Vegetable",
+       TRUE ~ sample
+     ),
+     microbe = str_trim(microbe),
+     microbe = case_when(
+       str_detect(microbe, regex("E. coli", ignore_case = TRUE)) ~ "E. coli",
+       str_detect(microbe, regex("Klebsiella", ignore_case = TRUE)) ~ "Klebsiella pneumoniae",
+       TRUE ~ microbe
+     )
+   ) %>%
+   filter(sample %in% c("Manure", "Soil", "Vegetable"))
+ 
+ # Aggregate: mean inhibition per farm/sample/microbe
+ agg_data <- microbiology %>%
+   group_by(farm, microbe, sample) %>%
+   summarise(
+     mean_inhibition = mean(inhibition, na.rm = TRUE),
+     .groups = "drop"
+   )
+ 
+ # Reshape to wide format
+ wide_data <- agg_data %>%
+   pivot_wider(
+     names_from = sample,
+     values_from = mean_inhibition
+   )
+ 
+ # Safe regression function
+ safe_regression <- function(df) {
+   complete_df <- df %>% 
+     select(Manure, Soil, Vegetable) %>%
+     drop_na()
+   
+   n_obs <- nrow(complete_df)
+   
+   if (n_obs >= 2) {  # allow regression with at least 2 complete observations
+     model <- tryCatch(
+       lm(Vegetable ~ Manure + Soil, data = complete_df),
+       error = function(e) NULL
+     )
+     
+     if (!is.null(model)) {
+       tidy(model) %>% 
+         mutate(n_obs = n_obs, .before = term)
+     } else {
+       tibble(term = c("(Intercept)", "Manure", "Soil"), 
+              n_obs = n_obs, estimate = NA_real_, 
+              std.error = NA_real_, statistic = NA_real_, 
+              p.value = NA_real_)
+     }
+   } else {
+     tibble(term = c("(Intercept)", "Manure", "Soil"), 
+            n_obs = n_obs, estimate = NA_real_, 
+            std.error = NA_real_, statistic = NA_real_, 
+            p.value = NA_real_)
+   }
+ }
+ 
+ # Apply regression by microbe
+ results <- wide_data %>%
+   group_by(microbe) %>%
+   group_modify(~ safe_regression(.x)) %>%
+   ungroup()
+ 
+ # Clean up results for display
+ results_clean <- results %>%
+   select(microbe, term, estimate, std.error, p.value, n_obs) %>%
+   mutate(
+     significance = case_when(
+       p.value < 0.001 ~ "***",
+       p.value < 0.01 ~ "**",
+       p.value < 0.05 ~ "*",
+       TRUE ~ ""
+     )
+   ) %>%
+   arrange(microbe, term)
+ 
+ # Format using gt
+ results_clean %>%
+   gt() %>%
+   fmt_number(columns = vars(estimate, std.error, p.value), decimals = 3) %>%
+   tab_header(
+     title = "Regression Results: Association between Manure, Soil and Vegetable"
+   )
+ 
+ 
+ # Diagnostic table: how many observations per microbe and sample
+ diagnostic_table <- microbiology %>%
+   group_by(microbe, sample) %>%
+   summarise(n = n(), .groups = "drop") %>%
+   pivot_wider(names_from = sample, values_from = n, values_fill = 0)
+ 
+ # Show diagnostic table
+ diagnostic_table %>% 
+   gt() %>%
+   tab_header(
+     title = "Available Data Per Microbe and Sample"
+   )
+
+ 
+ # Focus only on analyzable microbes
+ analyzable_microbes <- c("E. coli", "Klebsiella pneumoniae")
+ 
+ 
+ 
+ # Filter and aggregate data
+ agg_data <- microbiology %>%
+   filter(microbe %in% analyzable_microbes) %>%
+   group_by(farm, microbe, sample) %>%
+   summarise(
+     mean_inhibition = mean(inhibition, na.rm = TRUE),
+     .groups = "drop"
+   )
+ 
+ # Reshape and clean
+ wide_data <- agg_data %>%
+   pivot_wider(names_from = sample, values_from = mean_inhibition) %>%
+   filter(!is.na(Manure), !is.na(Soil), !is.na(Vegetable))
+ 
+ # Run regressions
+ results <- wide_data %>%
+   group_by(microbe) %>%
+   summarise(
+     n_farms = n(),
+     intercept = coef(lm(Vegetable ~ Manure + Soil))[1],
+     manure_coef = coef(lm(Vegetable ~ Manure + Soil))[2],
+     soil_coef = coef(lm(Vegetable ~ Manure + Soil))[3],
+     manure_p = summary(lm(Vegetable ~ Manure + Soil))$coefficients[2,4],
+     soil_p = summary(lm(Vegetable ~ Manure + Soil))$coefficients[3,4]
+   ) %>%
+   mutate(across(where(is.numeric), round, 3))
+ 
+ # Format results
+ results %>%
+   select(microbe, n_farms, manure_coef, manure_p, soil_coef, soil_p) %>%
+   gt() %>%
+   tab_header(
+     title = "Microbial Transmission Pathways",
+     subtitle = "Regression of Vegetable Inhibition on Manure and Soil Content"
+   ) %>%
+   cols_label(
+     microbe = "Microorganism",
+     n_farms = "Farms",
+     manure_coef = html("Manure β<br>(95% CI)"),
+     manure_p = "Manure p-value",
+     soil_coef = html("Soil β<br>(95% CI)"),
+     soil_p = "Soil p-value"
+   ) %>%
+   fmt_number(columns = c(manure_coef, soil_coef), decimals = 3) %>%
+   fmt_scientific(columns = c(manure_p, soil_p), decimals = 3) %>%
+   tab_style(
+     style = cell_fill(color = "lightgreen"),
+     locations = cells_body(
+       columns = manure_p,
+       rows = manure_p < 0.05
+     )
+   ) %>%
+   tab_style(
+     style = cell_fill(color = "lightgreen"),
+     locations = cells_body(
+       columns = soil_p,
+       rows = soil_p < 0.05
+     )
+   )
+ # Pairwise association: Manure vs Vegetable
+ pairwise_results <- agg_data %>%
+   filter(sample %in% c("Soil", "Vegetable")) %>%
+   pivot_wider(names_from = sample, values_from = mean_inhibition) %>%
+   group_by(microbe) %>%
+   group_modify(~ {
+     df <- drop_na(.x, Soil, Vegetable)
+     n_obs <- nrow(df)
+     if (n_obs >= 2) {
+       model <- lm(Vegetable ~ Soil, data = df)
+       tidy(model) %>% mutate(n_obs = n_obs, .before = term)
+     } else {
+       tibble(term = "(Intercept)", estimate = NA, std.error = NA, statistic = NA, p.value = NA, n_obs = n_obs)
+     }
+   }) %>%
+   ungroup()
+ 
+ # Display pairwise result using gt
+ pairwise_results %>%
+   select(microbe, term, estimate, std.error, p.value, n_obs) %>%
+   gt() %>%
+   tab_header(
+     title = "Pairwise Regression: Vegetable ~ Soil"
+   )
+
+# Antibiotics used --------------------------------------------------------
+ library(tidyverse)
+ 
+ # Define antibiotic abbreviation mapping
+ abx_mapping <- c(
+   "amoxicillin" = "AMOX",
+   "colistin" = "COL",
+   "doxycycline" = "DOX",
+   "doxycycline1" = "DOX",
+   "doxycycline2" = "DOX",
+   "enrofloxacin_69" = "ENR",
+   "enrofloxacin_84" = "ENR",
+   "gentamicin" = "GEN",
+   "other" = "Other",
+   "oxytetracycline_66" = "OXY",
+   "oxytetracycline_78" = "OXY",
+   "oxytetracycline_87" = "OXY",
+   "oxytetracycline1" = "OXY",
+   "oxytetracycline2" = "OXY",
+   "oxytetracycline3" = "OXY",
+   "penicillin" = "PEN",
+   "penicillin1" = "PEN",
+   "penicillin2" = "PEN",
+   "sulfadiazine" = "SDZ",
+   "sulfamethoxazole1" = "TMX",
+   "sulfamethoxazole2" = "TMX",
+   "trimethoprim_sulfamethoxazole" = "TMX",
+   "tylosin" = "TYL"
+ )
+ 
+ # Transform and aggregate data
+ products_long <- survey_df |> 
+   select(id, starts_with("used_")) |> 
+   pivot_longer(
+     cols = -id,
+     names_to = "OriginalProduct",
+     values_to = "used"
+   ) |> 
+   mutate(
+     # Remove 'used_' prefix
+     Product = str_remove(OriginalProduct, "^used_"),
+     # Map to antibiotic abbreviations
+     Antibiotic = recode(Product, !!!abx_mapping)
+   ) |> 
+   # Collapse multiple entries for same antibiotic per farm
+   group_by(id, Antibiotic) |> 
+   summarize(
+     Used = as.integer(any(used == 1)),
+     .groups = "drop"
+   ) |> 
+   mutate(Response = if_else(Used == 1, "Yes", "No"))
+ 
+ # Calculate total farms
+ total_n <- n_distinct(products_long$id)
+ 
+ # Calculate summary statistics
+ summary_data <- products_long |> 
+   filter(Response == "Yes") |> 
+   group_by(Antibiotic) |> 
+   summarise(
+     Count = n(),
+     Percentage = (Count / total_n) * 100,
+     SE = sqrt((Percentage/100) * (1 - Percentage/100) / total_n) * 100,
+     .groups = 'drop'
+   ) |> 
+   filter(Percentage >= 1)  # remove rare categories
+ 
+ # Generate plot with abbreviations
+ ggplot(summary_data, aes(x = fct_reorder(Antibiotic, Percentage, .desc = TRUE), 
+                          y = Percentage, 
+                          fill = Antibiotic)) + 
+   geom_col(width = 0.5) +
+   geom_errorbar(aes(ymin = pmax(0, Percentage - SE), 
+                     ymax = pmin(100, Percentage + SE)),
+                 width = 0.5, color = "black") +
+   geom_text(aes(y = pmin(100, Percentage + SE) + 2, 
+                 label = sprintf("%.1f%%", Percentage)),
+             size = 6, fontface = "bold", vjust = 0) +  
+   scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +  
+   labs(title = "Antibiotic Usage on Farms",
+        x = "Antibiotic",
+        y = "Percentage (%)") +
+   theme_classic() +
+   theme(
+     plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+     axis.title = element_text(size = 14, colour="black",face = "bold"),
+     axis.text = element_text(size = 12, color = "black",face = "bold"),
+     axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
+   ) +
+   guides(fill = "none")
  
