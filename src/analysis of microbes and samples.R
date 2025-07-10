@@ -19,3 +19,4 @@ library(broom)
 microbiology<- read_csv(here::here("data/raw/water-quality.csv")) |> 
   clean_names() |> 
   mutate_if(is.character, as_factor) 
+

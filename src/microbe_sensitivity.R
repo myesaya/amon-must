@@ -360,6 +360,7 @@ chicken <- gt(final_table) %>%
   cols_align("left", columns = everything())
 
 chicken
+chicken |> gtsave("Chicken Manure2.docx")
 ##############pig manure##################
 library(dplyr)
 library(tidyr)
@@ -609,6 +610,7 @@ pig_table <- gt(final_table) %>%
   cols_align("left", columns = everything())
 
 pig_table
+pig_table |> gtsave("Pig Manure2.docx")
 
 # Home soil ---------------------------------------------------------------
 
@@ -855,6 +857,7 @@ home_soil_table <- gt(final_table) %>%
   cols_align("left", columns = everything())
 
 home_soil_table
+home_soil_table |> gtsave("Home Soil2.docx")
 
 
 
@@ -1103,6 +1106,7 @@ farm_soil_table <- gt(final_table) %>%
   cols_align("left", columns = everything())
 
 farm_soil_table
+farm_soil_table |> gtsave("Farm Soil2.docx")
 
 # Rape --------------------------------------------------------------------
 
@@ -1349,6 +1353,7 @@ rape_table <- gt(final_table) %>%
   cols_align("left", columns = everything())
 
 rape_table
+rape_table |> gtsave("Rape2.docx")
 
 
 # Chinese cabbage ---------------------------------------------------------
@@ -1544,6 +1549,320 @@ chicken
 
 chicken |> gtsave("Amaranthus.docx")
 
+# Amaranthus revised ------------------------------------------------------
+# ===================== Amaranthus =====================
+# Step 1: Filter only Amaranthus
+amaranthus_data <- microbiology %>%
+  filter(item == "Amaranthus")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c("SXT", "CIP", "TGC", "CTX", "AMP", "GM", "ATM", "CRO", "VAN")
+
+# Step 3: Calculate resistance % with CI per microbe per antibiotic
+resistance_summary <- amaranthus_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    n_resistant = sum(is_resistant),
+    n_isolates = n(),
+    resistance_percent = round(mean(is_resistant) * 100),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    binom_ci = binom.confint(n_resistant, n_isolates, methods = "wilson"),
+    lower_ci = round(binom_ci$lower * 100),
+    upper_ci = round(binom_ci$upper * 100),
+    value_formatted = sprintf("%d%% (%d-%d)", resistance_percent, lower_ci, upper_ci)
+  ) %>%
+  select(microbe, antibiotic, value_formatted) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = value_formatted,
+    values_fill = "0% (0-0)"
+  )
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- amaranthus_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  mutate(across(all_of(selected_abx), ~ coalesce(.x, "0% (0-0)")))
+
+# Step 6: Generate resistance profile using numeric values
+numeric_resistance <- amaranthus_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = resistance_percent,
+    values_fill = 0
+  )
+
+make_profile <- function(microbe_name) {
+  if (!microbe_name %in% numeric_resistance$microbe) return("")
+  
+  row_data <- numeric_resistance %>% filter(microbe == microbe_name)
+  n_isolates <- isolate_counts$Isolates_n[isolate_counts$microbe == microbe_name]
+  
+  if (length(n_isolates) == 0 || is.na(n_isolates) || n_isolates == 0) return("")
+  
+  res_abx <- c()
+  for (abx in selected_abx) {
+    if (abx %in% names(row_data)) {
+      value <- row_data[[abx]]
+      if (!is.na(value) && value == 100) {
+        res_abx <- c(res_abx, abx)
+      }
+    }
+  }
+  
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", n_isolates, "/", n_isolates, ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(`Resistance Profile` = make_profile(microbe)) %>%
+  ungroup() %>%
+  mutate(`Resistance Profile` = ifelse(is.na(`Resistance Profile`), "", `Resistance Profile`))
+
+# Step 7: Add total row
+total_isolates <- sum(isolate_counts$Isolates_n)
+
+total_row <- amaranthus_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(
+    n_resistant = sum(sensitivity == "R"),
+    n_isolates = n(),
+    resistance_percent = round(mean(sensitivity == "R") * 100),
+    .groups = "drop"
+  ) %>%
+  mutate(
+    binom_ci = binom.confint(n_resistant, n_isolates, methods = "wilson"),
+    lower_ci = round(binom_ci$lower * 100),
+    upper_ci = round(binom_ci$upper * 100),
+    value_formatted = sprintf("%d%% (%d-%d)", resistance_percent, lower_ci, upper_ci)
+  ) %>%
+  select(antibiotic, value_formatted) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = value_formatted
+  ) %>%
+  mutate(
+    microbe = paste0("Total Amaranthus (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"
+  )
+
+# Step 8: Bind rows
+final_table <- bind_rows(
+  table_data,
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table
+amaranthus_table <- gt(final_table) %>%
+  tab_header(
+    title = "Amaranthus Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = everything())
+
+amaranthus_table
+
+amaranthus_table |> gtsave("Amaranthus2.docx")
+
+# Amaranthus 3 ------------------------------------------------------------
+library(dplyr)
+library(tidyr)
+library(binom)
+library(gt)
+
+# Step 1: Filter only Amaranthus
+amaranthus_data <- microbiology %>%
+  filter(item == "Amaranthus")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c("SXT", "CIP", "TGC", "CTX", "AMP", "GM", "ATM", "CRO", "VAN")
+
+# Step 3: Calculate resistance % with CI per microbe per antibiotic
+resistance_summary <- amaranthus_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    n_resistant = sum(is_resistant),
+    n_isolates = n(),
+    resistance_percent = round(mean(is_resistant) * 100),
+    .groups = "drop"
+  ) %>%
+  # Calculate binomial confidence intervals
+  mutate(
+    binom_ci = binom.confint(n_resistant, n_isolates, methods = "wilson"),
+    lower_ci = round(binom_ci$lower * 100),
+    upper_ci = round(binom_ci$upper * 100),
+    value_formatted = sprintf("%d%% (%d-%d)", resistance_percent, lower_ci, upper_ci)
+  ) %>%
+  select(microbe, antibiotic, value_formatted) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = value_formatted
+  )
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- amaranthus_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+
+# Step 5: Join isolate counts with resistance data, fill NA with "NT"
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  mutate(across(all_of(selected_abx), ~ coalesce(.x, "NT")))
+
+# Step 6: Numeric resistance for profile generation
+numeric_resistance <- amaranthus_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = resistance_percent
+  )
+
+# Corrected make_profile function
+make_profile <- function(microbe_name) {
+  if (!microbe_name %in% numeric_resistance$microbe) {
+    return("")
+  }
+  
+  row_data <- numeric_resistance %>% filter(microbe == microbe_name)
+  n_isolates <- isolate_counts$Isolates_n[isolate_counts$microbe == microbe_name]
+  
+  if (length(n_isolates) == 0 || is.na(n_isolates) || n_isolates == 0) return("")
+  
+  res_abx <- c()
+  for (abx in selected_abx) {
+    if (abx %in% names(row_data) && !is.na(row_data[[abx]])) {
+      if (row_data[[abx]] == 100) {
+        res_abx <- c(res_abx, abx)
+      }
+    }
+  }
+  
+  if (length(res_abx) == 0) return("")
+  
+  return(paste0(paste(res_abx, collapse = "-"), " (", n_isolates, "/", n_isolates, ")"))
+}
+
+# Apply resistance profile to table_data
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(`Resistance Profile` = make_profile(microbe)) %>%
+  ungroup() %>%
+  mutate(`Resistance Profile` = ifelse(is.na(`Resistance Profile`), "", `Resistance Profile`))
+
+# Step 7: Create total row summary with NT handling
+total_isolates <- sum(isolate_counts$Isolates_n)
+
+total_abx_summary <- amaranthus_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(
+    n_resistant = sum(sensitivity == "R"),
+    n_isolates = n(),
+    .groups = "drop"
+  )
+
+total_abx_complete <- tibble(antibiotic = selected_abx) %>%
+  left_join(total_abx_summary, by = "antibiotic") %>%
+  replace_na(list(n_resistant = 0, n_isolates = 0))
+
+total_abx_complete <- total_abx_complete %>%
+  mutate(
+    lower_ci = NA_real_,
+    upper_ci = NA_real_,
+    resistance_percent = NA_real_
+  )
+
+for (i in seq_len(nrow(total_abx_complete))) {
+  if (total_abx_complete$n_isolates[i] > 0) {
+    ci <- binom.confint(total_abx_complete$n_resistant[i], total_abx_complete$n_isolates[i], methods = "wilson")
+    total_abx_complete$lower_ci[i] <- round(ci$lower * 100)
+    total_abx_complete$upper_ci[i] <- round(ci$upper * 100)
+    total_abx_complete$resistance_percent[i] <- round((total_abx_complete$n_resistant[i] / total_abx_complete$n_isolates[i]) * 100)
+  }
+}
+
+total_abx_complete <- total_abx_complete %>%
+  mutate(
+    value_formatted = ifelse(n_isolates > 0,
+                             sprintf("%d%% (%d-%d)", resistance_percent, lower_ci, upper_ci),
+                             "NT")
+  )
+
+total_row <- total_abx_complete %>%
+  select(antibiotic, value_formatted) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = value_formatted
+  ) %>%
+  mutate(
+    microbe = paste0("Total Amaranthus (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"  # Adjust dynamically if needed
+  )
+
+# Step 8: Bind rows and select columns
+final_table <- bind_rows(table_data, total_row) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create GT table and style "NT" values grey
+library(gt)
+
+amaranthus_table <- gt(final_table) %>%
+  tab_header(title = "Amaranthus Resistance") %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = everything())
+
+for (abx_col in selected_abx) {
+  amaranthus_table <- amaranthus_table %>%
+    tab_style(
+      style = cell_text(color = "grey"),
+      locations = cells_body(
+        columns = !!sym(abx_col),
+        rows = .data[[abx_col]] == "NT"
+      )
+    )
+}
+
+# Show or save the table
+amaranthus_table
+# amaranthus_table |> gtsave("Amaranthus3.docx")
+
+
+
+
 # Cabbage revised ---------------------------------------------------------
 
 # Load required packages
@@ -1687,5 +2006,180 @@ cabbage_table <- gt(final_table) %>%
   cols_align("left", columns = everything())
 
 cabbage_table
+cabbage_table |> gtsave("Chinese2.docx")
 
+# Chinese 3 ---------------------------------------------------------------
+
+# Step 1: Filter only Chinese Cabbage
+cabbage_data <- microbiology %>%
+  filter(item == "Chinese Cabbage")
+
+# Step 2: Define antibiotics of interest
+selected_abx <- c("SXT", "CIP", "TGC", "CTX", "AMP", "GM")
+
+# Step 3: Calculate resistance % with CI per microbe per antibiotic
+resistance_summary <- cabbage_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    n_resistant = sum(is_resistant),
+    n_isolates = n(),
+    resistance_percent = round(mean(is_resistant) * 100),
+    .groups = "drop"
+  ) %>%
+  # Calculate binomial confidence intervals
+  mutate(
+    binom_ci = binom.confint(n_resistant, n_isolates, methods = "wilson"),
+    lower_ci = round(binom_ci$lower * 100),
+    upper_ci = round(binom_ci$upper * 100),
+    value_formatted = sprintf("%d%% (%d-%d)", resistance_percent, lower_ci, upper_ci)
+  ) %>%
+  select(microbe, antibiotic, value_formatted) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = value_formatted
+  )  # Removed values_fill - leaves NA for untested combinations
+
+# Step 4: Get isolate counts per microbe
+isolate_counts <- cabbage_data %>%
+  count(microbe, name = "Isolates_n") %>%
+  distinct()
+
+# Step 5: Join isolate counts with resistance data
+table_data <- isolate_counts %>%
+  left_join(resistance_summary, by = "microbe") %>%
+  # Fill NA with "NT" for untested antibiotic-microbe combinations
+  mutate(across(all_of(selected_abx), ~ coalesce(.x, "NT")))
+
+# Step 6: Generate resistance profile (unchanged)
+numeric_resistance <- cabbage_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  mutate(is_resistant = ifelse(sensitivity == "R", 1, 0)) %>%
+  group_by(microbe, antibiotic) %>%
+  summarise(
+    resistance_percent = round(mean(is_resistant) * 100),
+    .groups = "drop"
+  ) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = resistance_percent,
+    values_fill = 0
+  )
+
+make_profile <- function(microbe_name) {
+  if (!microbe_name %in% numeric_resistance$microbe) return("")
+  
+  row_data <- numeric_resistance %>% filter(microbe == microbe_name)
+  n_isolates <- isolate_counts$Isolates_n[isolate_counts$microbe == microbe_name]
+  
+  if (length(n_isolates) == 0 || is.na(n_isolates) || n_isolates == 0) return("")
+  
+  res_abx <- c()
+  for (abx in selected_abx) {
+    if (abx %in% names(row_data)) {
+      value <- row_data[[abx]]
+      if (!is.na(value) && value == 100) {
+        res_abx <- c(res_abx, abx)
+      }
+    }
+  }
+  
+  if (length(res_abx) == 0) return("")
+  paste0(paste(res_abx, collapse = "-"), " (", n_isolates, "/", n_isolates, ")")
+}
+
+table_data <- table_data %>%
+  rowwise() %>%
+  mutate(`Resistance Profile` = make_profile(microbe)) %>%
+  ungroup() %>%
+  mutate(`Resistance Profile` = ifelse(is.na(`Resistance Profile`), "", `Resistance Profile`))
+
+# Step 7: Create improved total row with NT support
+total_isolates <- sum(isolate_counts$Isolates_n)
+
+# Create summary for tested antibiotics
+total_abx_summary <- cabbage_data %>%
+  filter(antibiotic %in% selected_abx) %>%
+  group_by(antibiotic) %>%
+  summarise(
+    n_resistant = sum(sensitivity == "R"),
+    n_isolates = n(),
+    .groups = "drop"
+  )
+
+# Complete with all antibiotics and handle untested ones
+total_abx_complete <- tibble(antibiotic = selected_abx) %>%
+  left_join(total_abx_summary, by = "antibiotic") %>%
+  replace_na(list(n_resistant = 0, n_isolates = 0))
+
+# Initialize columns
+total_abx_complete$lower_ci <- NA_real_
+total_abx_complete$upper_ci <- NA_real_
+total_abx_complete$resistance_percent <- NA_real_
+
+# Calculate CI and percentages only for tested antibiotics
+for (i in 1:nrow(total_abx_complete)) {
+  if (total_abx_complete$n_isolates[i] > 0) {
+    ci <- binom.confint(total_abx_complete$n_resistant[i], 
+                        total_abx_complete$n_isolates[i], 
+                        methods = "wilson")
+    total_abx_complete$lower_ci[i] <- round(ci$lower * 100)
+    total_abx_complete$upper_ci[i] <- round(ci$upper * 100)
+    total_abx_complete$resistance_percent[i] <- round((total_abx_complete$n_resistant[i] / total_abx_complete$n_isolates[i]) * 100)
+  }
+}
+
+# Format results
+total_abx_complete <- total_abx_complete %>%
+  mutate(value_formatted = ifelse(n_isolates > 0,
+                                  sprintf("%d%% (%d-%d)", resistance_percent, lower_ci, upper_ci),
+                                  "NT"))
+
+# Create total row
+total_row <- total_abx_complete %>%
+  select(antibiotic, value_formatted) %>%
+  pivot_wider(
+    names_from = antibiotic,
+    values_from = value_formatted
+  ) %>%
+  mutate(
+    microbe = paste0("Total Chinese (n = ", total_isolates, ")"),
+    Isolates_n = as.integer(total_isolates),
+    `Resistance Profile` = "70% MDR (7/10)"  # Update this with dynamic calculation if needed
+  )
+
+# Step 8: Bind rows
+final_table <- bind_rows(
+  table_data,
+  total_row
+) %>%
+  select(microbe, Isolates_n, all_of(selected_abx), `Resistance Profile`)
+
+# Step 9: Create formatted GT table with grey NT
+cabbage_table <- gt(final_table) %>%
+  tab_header(
+    title = "Chinese Cabbage Resistance"
+  ) %>%
+  cols_label(
+    microbe = "Microorganism",
+    Isolates_n = "Isolates (n)"
+  ) %>%
+  cols_align("left", columns = everything())
+
+# Apply grey color to NT cells
+for (abx_col in selected_abx) {
+  cabbage_table <- cabbage_table %>%
+    tab_style(
+      style = cell_text(color = "grey"),
+      locations = cells_body(
+        columns = !!sym(abx_col),
+        rows = .data[[abx_col]] == "NT"
+      )
+    )
+}
+
+cabbage_table
+cabbage_table |> gtsave("Chinese3.docx")
 #
+
