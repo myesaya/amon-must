@@ -560,3 +560,370 @@ results <- map_dfr(comparisons, function(comp) {
 # Print results
 print(results)
 
+# Heatmap -----------------------------------------------------------------
+
+
+library(tidyverse)
+library(boot)
+library(ggplot2)
+
+# Jaccard function
+jaccard <- function(set1, set2) {
+  intersection = length(intersect(set1, set2))
+  union = length(union(set1, set2))
+  if (union == 0) return(NA_real_)
+  return(intersection / union)
+}
+
+# Filter and prepare microbiology data
+microbe_presence <- microbiology %>%
+  mutate(sample = str_trim(sample)) %>%
+  filter(sample %in% c("Manure", "Soil", "Vegetable")) %>%
+  distinct(farm, sample, microbe)
+
+# Calculate Jaccard per farm per pair
+farm_jaccard <- microbe_presence %>%
+  group_by(farm) %>%
+  summarise(
+    Manure_Soil = jaccard(
+      microbe[sample == "Manure"],
+      microbe[sample == "Soil"]
+    ),
+    Manure_Vegetable = jaccard(
+      microbe[sample == "Manure"],
+      microbe[sample == "Vegetable"]
+    ),
+    Soil_Vegetable = jaccard(
+      microbe[sample == "Soil"],
+      microbe[sample == "Vegetable"]
+    ),
+    .groups = 'drop'
+  )
+
+# Pivot to long format for plotting
+jaccard_long <- farm_jaccard %>%
+  pivot_longer(cols = -farm, names_to = "pair", values_to = "jaccard")
+
+# Calculate mean Jaccard per pair for heatmap
+jaccard_means <- jaccard_long %>%
+  group_by(pair) %>%
+  summarise(mean_jaccard = round(mean(jaccard, na.rm = TRUE), 2))
+
+# Create a matrix-friendly format from pair names
+jaccard_matrix <- jaccard_means %>%
+  separate(pair, into = c("Comp1", "Comp2"), sep = "_") %>%
+  mutate(Comp1 = str_to_title(Comp1),
+         Comp2 = str_to_title(Comp2))
+
+# Duplicate to make full symmetric matrix
+heat_data <- bind_rows(
+  jaccard_matrix,
+  jaccard_matrix %>% rename(Comp1 = Comp2, Comp2 = Comp1)
+)
+
+# Add diagonal for self-comparison
+diag_comp <- tibble(Comp1 = c("Manure", "Soil", "Vegetable"),
+                    Comp2 = c("Manure", "Soil", "Vegetable"),
+                    mean_jaccard = 1)
+
+heat_data <- bind_rows(heat_data, diag_comp)
+
+# Plot heatmap
+ggplot(heat_data, aes(x = Comp1, y = Comp2, fill = mean_jaccard)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = sprintf("%.2f", mean_jaccard)), size = 5, , fontface = "bold") +
+  scale_fill_gradient2(
+    low = "#d73027", mid = "white", high = "#1a9850", midpoint = 0.5,
+    name = "Jaccard Index"
+  ) +
+  labs(title = "Microbial Similarity Across Compartments",
+       x = "Compartment",
+       y = "Compartment") +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text = element_text(face = "bold", colour = "black"),
+    axis.title = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    panel.grid = element_blank()
+  )
+
+
+# Heatmap revised ---------------------------------------------------------
+
+library(tidyverse)
+library(boot)
+library(ggplot2)
+library(glue)
+
+# STEP 1: Prepare presence data
+microbe_presence <- microbiology %>%
+  mutate(sample = str_trim(sample)) %>%
+  filter(sample %in% c("Manure", "Soil", "Vegetable")) %>%
+  distinct(farm, sample, microbe)
+
+# STEP 2: Jaccard function
+jaccard <- function(set1, set2) {
+  intersection <- length(intersect(set1, set2))
+  union <- length(union(set1, set2))
+  if (union == 0) return(NA_real_)
+  intersection / union
+}
+
+# STEP 3: Calculate Jaccard per farm
+farm_jaccard <- microbe_presence %>%
+  group_by(farm) %>%
+  summarise(
+    Manure_Soil = jaccard(microbe[sample == "Manure"], microbe[sample == "Soil"]),
+    Manure_Vegetable = jaccard(microbe[sample == "Manure"], microbe[sample == "Vegetable"]),
+    Soil_Vegetable = jaccard(microbe[sample == "Soil"], microbe[sample == "Vegetable"]),
+    .groups = 'drop'
+  )
+
+# STEP 4: Bootstrap CI function
+bootstrap_ci <- function(x, n_boot = 5000) {
+  x <- na.omit(x)
+  if(length(x) < 2) return(tibble(mean = NA, lower_ci = NA, upper_ci = NA, p_value = NA))
+  
+  boots <- boot(data = x, statistic = function(data, i) mean(data[i]), R = n_boot)
+  ci <- tryCatch(boot.ci(boots, type = "bca"), error = function(e) NULL)
+  ttest <- t.test(x, alternative = "greater", mu = 0)
+  
+  tibble(
+    mean = round(mean(x), 2),
+    lower_ci = if (!is.null(ci)) round(ci$bca[4], 2) else NA,
+    upper_ci = if (!is.null(ci)) round(ci$bca[5], 2) else NA,
+    p_value = round(ttest$p.value, 3)
+  )
+}
+
+# STEP 5: Calculate stats per pair
+comparisons <- c("Manure_Soil", "Manure_Vegetable", "Soil_Vegetable")
+results <- map_dfr(comparisons, function(comp) {
+  stats <- bootstrap_ci(farm_jaccard[[comp]])
+  stats$pair <- comp
+  stats
+})
+
+# STEP 6: Reformat into matrix-friendly structure
+heat_data <- results %>%
+  separate(pair, into = c("Comp1", "Comp2"), sep = "_") %>%
+  mutate(
+    Comp1 = str_to_title(Comp1),
+    Comp2 = str_to_title(Comp2),
+    label = glue("{mean}\n(CI: {lower_ci}–{upper_ci}, p={p_value})")
+  )
+
+# Duplicate rows for symmetry
+heat_data_sym <- bind_rows(
+  heat_data,
+  heat_data %>% rename(Comp1 = Comp2, Comp2 = Comp1)
+)
+
+# Add diagonal
+diag_vals <- tibble(
+  Comp1 = c("Manure", "Soil", "Vegetable"),
+  Comp2 = c("Manure", "Soil", "Vegetable"),
+  mean = 1,
+  lower_ci = NA,
+  upper_ci = NA,
+  p_value = NA,
+  label = "1.00\n(Self)"
+)
+
+# Combine all heatmap data
+heatmap_df <- bind_rows(heat_data_sym, diag_vals)
+
+# STEP 7: Plot
+ggplot(heatmap_df, aes(x = Comp1, y = Comp2, fill = mean)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = label), size = 4.2, fontface = "bold", lineheight = 1.1)+
+  scale_fill_gradient2(
+    low = "#d73027", mid = "white", high = "#1a9850", midpoint = 0.5,
+    name = "Jaccard Index", limits = c(0, 1)
+  ) +
+  labs(
+    title = "Microbial Similarity Across Compartments",
+    subtitle = "Jaccard index with 95% CI and p-values",
+    x = "Compartment", y = "Compartment"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text = element_text(face = "bold", colour = "black"),
+    axis.title = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    panel.grid = element_blank()
+  )
+
+# Jacard revised ----------------------------------------------------------
+bootstrap_microbe_sample <- function(data, sample_col) {
+  # Define which samples are being compared
+  samples <- c("Manure", "Soil", "Vegetable")
+  other_samples <- setdiff(samples, sample_col)
+  
+  x <- data[[sample_col]]
+  y <- (data[[other_samples[1]]] + data[[other_samples[2]]]) > 0
+  
+  if (sum(x | y) == 0) {
+    return(tibble(mean = NA, lower_ci = NA, upper_ci = NA, p_value = NA))
+  }
+  
+  # Perform bootstrapping
+  boots <- boot(data = data.frame(x, y), statistic = function(d, i) {
+    jaccard_index(d$x[i], d$y[i])
+  }, R = 5000)
+  
+  boot_vals <- boots$t[is.finite(boots$t)]
+  
+  # Handle constant or NA bootstrap values
+  if (length(unique(boot_vals)) <= 1) {
+    return(tibble(
+      mean = round(mean(boot_vals), 2),
+      lower_ci = NA,
+      upper_ci = NA,
+      p_value = NA
+    ))
+  }
+  
+  ci <- tryCatch(boot.ci(boots, type = "bca"), error = function(e) NULL)
+  ttest <- tryCatch(t.test(boot_vals, alternative = "greater", mu = 0), error = function(e) NULL)
+  
+  tibble(
+    mean = round(mean(boot_vals), 2),
+    lower_ci = if (!is.null(ci)) round(ci$bca[4], 2) else NA,
+    upper_ci = if (!is.null(ci)) round(ci$bca[5], 2) else NA,
+    p_value = if (!is.null(ttest)) round(ttest$p.value, 3) else NA
+  )
+}
+
+# Heatmap revised2 --------------------------------------------------------
+
+# Load libraries
+library(tidyverse)
+library(boot)
+library(ggplot2)
+library(glue)
+
+# STEP 1: Clean input data
+microbe_presence <- microbiology %>%
+  mutate(
+    sample = str_trim(sample),
+    microbe = str_trim(microbe)
+  ) %>%
+  filter(sample %in% c("Manure", "Soil", "Vegetable")) %>%
+  distinct(farm, sample, microbe)
+
+# STEP 2: Keep only microbes found in ALL THREE sample types
+microbes_all_three <- microbe_presence %>%
+  distinct(sample, microbe) %>%
+  group_by(microbe) %>%
+  summarise(n_samples = n_distinct(sample), .groups = "drop") %>%
+  filter(n_samples == 3) %>%
+  pull(microbe)
+
+# STEP 3: Filter to relevant microbes only
+filtered_data <- microbe_presence %>%
+  filter(microbe %in% microbes_all_three)
+
+# STEP 4: Create presence matrix: one row per farm × microbe
+presence_matrix <- filtered_data %>%
+  mutate(present = 1) %>%
+  pivot_wider(
+    names_from = sample,
+    values_from = present,
+    values_fill = 0
+  )
+
+# STEP 5: Jaccard index function
+jaccard_index <- function(x, y) {
+  intersection <- sum(x & y)
+  union <- sum(x | y)
+  if (union == 0) return(NA_real_)
+  intersection / union
+}
+
+# STEP 6: Bootstrap function per microbe-sample
+bootstrap_microbe_sample <- function(df, sample_col) {
+  samples <- c("Manure", "Soil", "Vegetable")
+  other_samples <- setdiff(samples, sample_col)
+  
+  x <- df[[sample_col]]
+  y <- (df[[other_samples[1]]] + df[[other_samples[2]]]) > 0
+  
+  if (sum(x | y) == 0) {
+    return(tibble(mean = NA, lower_ci = NA, upper_ci = NA, p_value = NA))
+  }
+  
+  boots <- boot(data = data.frame(x, y), statistic = function(d, i) {
+    jaccard_index(d$x[i], d$y[i])
+  }, R = 5000)
+  
+  boot_vals <- boots$t[is.finite(boots$t)]
+  
+  if (length(unique(boot_vals)) <= 1) {
+    return(tibble(
+      mean = round(mean(boot_vals), 2),
+      lower_ci = NA,
+      upper_ci = NA,
+      p_value = NA
+    ))
+  }
+  
+  ci <- tryCatch(boot.ci(boots, type = "bca"), error = function(e) NULL)
+  ttest <- tryCatch(t.test(boot_vals, alternative = "greater", mu = 0), error = function(e) NULL)
+  
+  tibble(
+    mean = round(mean(boot_vals), 2),
+    lower_ci = if (!is.null(ci)) format(ci$bca[4], digits = 2, nsmall = 2) else NA,
+    upper_ci = if (!is.null(ci)) format(ci$bca[5], digits = 2, nsmall = 2) else NA,
+    p_value = if (!is.null(ttest)) {
+      if (ttest$p.value < 0.001) "p<0.001" else glue("p={format(round(ttest$p.value, 3), nsmall = 3)}")
+    } else NA
+  )
+}
+
+# STEP 7: Loop over each microbe × sample
+jaccard_results <- presence_matrix %>%
+  group_split(microbe) %>%
+  map_dfr(function(df) {
+    microbe_name <- df$microbe[1]
+    map_dfr(c("Manure", "Soil", "Vegetable"), function(smp) {
+      res <- bootstrap_microbe_sample(df, smp)
+      res$microbe <- microbe_name
+      res$sample <- smp
+      res
+    })
+  })
+
+# STEP 8: Add label and factor levels
+jaccard_results <- jaccard_results %>%
+  mutate(
+    label = glue("{mean}\n({lower_ci}–{upper_ci}, {p_value})"),
+    sample = factor(sample, levels = c("Manure", "Soil", "Vegetable"))
+  )
+
+# STEP 9: Plot the heatmap
+ggplot(jaccard_results, aes(x = sample, y = fct_rev(factor(microbe)), fill = mean)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = label), size = 4, fontface = "bold", lineheight = 1.1) +
+  scale_fill_gradient2(
+    low = "#1a9850", mid = "pink", high = "orange",
+    midpoint = 0.5, name = "Jaccard Index", limits = c(0, 1), na.value = "grey80"
+  ) +
+  scale_y_discrete(labels = function(x) parse(text = paste0("italic('", x, "')"))) +
+  labs(
+    title = "Consistency of Microbial Presence Across Farms",
+    subtitle = "Jaccard index by sample type (with 95% CI and p-values)",
+    x = "Sample Type",
+    y = "Microbe"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    axis.text = element_text(face = "bold", colour = "black"),
+    axis.title = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5),
+    panel.grid = element_blank()
+  )
+

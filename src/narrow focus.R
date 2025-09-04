@@ -36,7 +36,7 @@ microbiology<-microbiology |>
                      levels = c("farm 1",
                                 "farm 2",
                                 "farm 3",
-                                "farm 4",
+                                "farm 4")))
 
 
 # Filter the microbiology dataset for specific microbes

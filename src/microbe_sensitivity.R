@@ -1858,7 +1858,7 @@ for (abx_col in selected_abx) {
 
 # Show or save the table
 amaranthus_table
-# amaranthus_table |> gtsave("Amaranthus3.docx")
+ amaranthus_table |> gtsave("Amaranthus3.docx")
 
 
 

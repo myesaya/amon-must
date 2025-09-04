@@ -893,7 +893,11 @@ products <- survey_df |>
 
 # Reshape to long format and rename product names using fct_recode()
 library(tidyverse)
+#install.packages("extrafont")
+library(extrafont)
+font_import()
 
+loadfonts(device = "win")
 # Reshape to long format and rename product names using fct_recode()
 products_long <- products |> 
   pivot_longer(cols = everything(), names_to = "Product", values_to = "Response") |> 
@@ -923,27 +927,56 @@ summary_data <- products_long |>
   ) |> 
   filter(Percentage >= 1)  # remove categories with <1%
 
-# Plot with error bars and text above SE
-ggplot(summary_data, aes(x = fct_reorder(Product, Percentage, .desc = TRUE), y = Percentage, fill = Product)) + 
-  geom_col(width = 0.4) +
-  geom_errorbar(aes(ymin = Percentage - SE, ymax = Percentage + SE), width = 0.2, color = "black") +
-  geom_text(aes(y = Percentage + SE + 2, label = sprintf("%.1f%%", Percentage)),  
-            size = 6, fontface = "bold") +  
-  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +  
-  labs(title = "Products Used",
-       x = "Product",
-       y = "Percentage (%)") +
+# Load required packages
+library(ggplot2)
+library(forcats)
+library(extrafont)
+
+# Load the fonts (you might need to run this once per session)
+loadfonts(device = "win")
+
+# Create the plot with Palatino Linotype font
+mhm <- ggplot(summary_data, aes(x = fct_reorder(Product, Percentage, .desc = TRUE), 
+                                y = Percentage, 
+                                fill = Product)) + 
+  geom_col(width = 0.3) +
+  geom_errorbar(aes(ymin = Percentage - SE, ymax = Percentage + SE), 
+                width = 0.2, 
+                color = "black") +
+geom_text(aes(y = Percentage + SE + 2, 
+               label = sprintf("%.1f%%", Percentage)),  
+          size = 5, 
+         fontface = "bold",
+        vjust = 0,
+       family = "Palatino Linotype") +  # Specify font family for text
+  scale_y_continuous(limits = c(0, 100), 
+                     breaks = seq(0, 100, 20),
+                     expand = expansion(mult = c(0, 0.1))) +
+  labs(x = "Type of health products ",
+       y = "Percentage of respondents(%)") +
   theme_classic() +
   theme(
-    plot.title = element_text(hjust = 0.5, size = 16, face = "bold", color = "black"),  
-    axis.title.x = element_text(hjust = 0.5, size = 14, color = "black", face = "bold"),  
-    axis.title.y = element_text(hjust = 0.5, size = 14, color = "black"),  
-    axis.text.x = element_text(size = 13, color = "black"),  
-    axis.text.y = element_text(size = 13, color = "black")   
+    plot.title = element_text(hjust = 0.5, size = 10, face = "bold", 
+                              color = "black", family = "Palatino Linotype"),  
+    axis.title.x = element_text(hjust = 0.5, size = 14, color = "black", 
+                                face = "bold", family = "Palatino Linotype"),  
+    axis.title.y = element_text(hjust = 0.5, size = 14, color = "black", 
+                                face = "bold", family = "Palatino Linotype"),  
+    axis.text.x = element_text(size = 12, color = "black", 
+                               family = "Palatino Linotype"),  
+    axis.text.y = element_text(size = 12, color = "black", 
+                               family = "Palatino Linotype")   
   ) +
-  guides(fill = "none")  
+  guides(fill = "none") 
+mhm
 
-
+# Save the plot with embedded fonts
+ggsave("products_revised.pdf",
+       plot = mhm,
+       width = 9, 
+       height = 6,
+       units = "in",
+       device = cairo_pdf)  # Use Cairo PDF device which handles fonts better
 #******************************************************
 library(dplyr)
 library(forcats)
@@ -960,6 +993,12 @@ disease <- survey_df %>%
 # Step 2: Reshape to long format
 disease_long <- disease %>%
   pivot_longer(cols = everything(), names_to = "Disease", values_to = "Response")
+# Convert to factor
+disease_long$Disease <- as.factor(disease_long$Disease)
+
+# Check factor levels
+levels(disease_long$Disease)
+
 
 # Step 3: Recoding disease names into Chicken and Pig categories
 disease_modified <- disease_long %>%
@@ -967,11 +1006,11 @@ disease_modified <- disease_long %>%
                                "Chicken" = "disease_chicken_newcastle",
                                "Chicken" = "disease_chicken_infectious_bursal",
                                "Chicken" = "disease_chicken_coccidiosis",
-                               "Chicken" = "disease_coryza",
+                               "Chicken" = "disease_chicken_coryza",
                                "Chicken" = "disease_chicken_cholera",
                                "Chicken" = "diseases_chicken_fowl_pox",
-                               "Chicken" = "disease_worms",
-                               "Chicken" = "disease_parasites",
+                               "Chicken" = "disease_chicken_worms",
+                               "Chicken" = "disease_chicken_parasites",
                                "Pig" = "disease_pig_diarrhea",
                                "Pig" = "disease_pig_swine_erysipelas",
                                "Pig" = "disease_pig_pneumonia",
@@ -993,7 +1032,7 @@ disease_modified <- disease_long %>%
 #chicken
 
 chichen_disease<-survey_df |>
-  select(disease_chicken_newcastle:disease_parasites) |> 
+  select(disease_chicken_newcastle:disease_chicken_worms) |> 
   mutate(id=1:nrow(survey_df)) 
 
 
@@ -1026,11 +1065,11 @@ yes_counts_percent<-yes_counts_percent |>
                             "New castle"="disease_chicken_newcastle",
                             "Infectious bursal"="disease_chicken_infectious_bursal",
                             "Coccidiosis"="disease_chicken_coccidiosis",
-                            "Corza"="disease_coryza",
+                            "Corza"="disease_chicken_coryza",
                             "Cholera"="disease_chicken_cholera",
                             "Fowl Pox"="diseases_chicken_fowl_pox",
-                            "Worms"="disease_worms",
-                            "Parasites"="disease_parasites"))
+                            "Worms"="disease_chicken_worms",
+                            "Parasites"="disease_chicken_parasites"))
 
 # Plot the data
 ggplot(yes_counts_percent, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
@@ -1821,7 +1860,7 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
  
  
  
- ################diseases
+ ################here diseases
  
  
  
@@ -1874,26 +1913,37 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
                                " Parasites"="disease_chicken_parasites" ))
  
  # Plot with error bars
- ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
+ cd<-ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
    geom_col(width = 0.4) +
    geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
-   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.2f%%", Percent)), 
-             size = 5, fontface = "bold") +
+   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.1f%%", Percent)), 
+             size = 5, fontface = "bold", family = "Palatino Linotype") +
    scale_y_continuous(limits = c(0, 70), breaks = seq(0, 100, 20)) +
    labs(
-     title = "Percentage of responses on Chicken diseases",
-     x = "Diseases",
-     y = "Percentages (%)"
+
+     x = "Poultry diseases",
+     y = "Percentage of respondents using antibiotics (%)"
    ) +
    theme_classic() +
    theme(
      legend.position = "none",
-     axis.text.x = element_text(angle = 45, hjust = 1, size = 14, color = "black"),
-     axis.title.x = element_text(size = 16, face = "bold", color = "black"),
-     axis.text.y = element_text(hjust = 1, size = 14, color = "black"),
-     axis.title.y = element_text(size = 16, face = "bold", color = "black"),
-     plot.title = element_text(size = 17, face = "bold", color = "black")
+     axis.text.x = element_text(angle = 45, hjust = 1, size = 12, color = "black", family = "Palatino Linotype"),
+     axis.title.x = element_text(size = 14, face = "bold", color = "black", family = "Palatino Linotype"),
+     axis.text.y = element_text(hjust = 1, size = 12, color = "black", family = "Palatino Linotype"),
+     axis.title.y = element_text(size = 14, face = "bold", color = "black", family = "Palatino Linotype"),
+     plot.title = element_text(size = 17, face = "bold", color = "black", family = "Palatino Linotype")
    )
+ 
+ cd
+ 
+ # Save the plot with embedded fonts
+ ggsave("Poultry diseases.pdf",
+        plot = cd,
+        width = 9, 
+        height = 6,
+        units = "in",
+        device = cairo_pdf)  # Use Cairo PDF device which handles fonts better
+ #******************************************************
  
  
  #########pig
@@ -1949,28 +1999,36 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
                                 "African swine"="disease_pigs_african_swine"))
  
  # Plot with error bars
- ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
+pd<- ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
    geom_col(width = 0.45) +
    geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
-   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.2f%%", Percent)), 
-             size = 5, fontface = "bold") +
-   scale_y_continuous(limits = c(0, 90), breaks = seq(0, 100, 20)) +
+   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.1f%%", Percent)), 
+             size = 5, fontface = "bold", family = "Palatino Linotype") +
+   scale_y_continuous(limits = c(0, 85), breaks = seq(0, 100, 20)) +
    labs(
-     title = "Percentage of responses on Pig diseases",
-     x = "Diseases",
-     y = "Percentages (%)"
+    
+     x = "Pig diseases",
+     y = "Percentage of respondents using antibiotics (%)"
    ) +
    theme_classic() +
    theme(
      legend.position = "none",
-     axis.text.x = element_text(angle = 45, hjust = 1, size = 14, color = "black"),
-     axis.title.x = element_text(size = 16, face = "bold", color = "black"),
-     axis.text.y = element_text(hjust = 1, size = 14, color = "black"),
-     axis.title.y = element_text(size = 16, face = "bold", color = "black"),
-     plot.title = element_text(size = 17, face = "bold", color = "black")
+     axis.text.x = element_text(angle = 45, hjust = 1, size = 12, color = "black", family = "Palatino Linotype"),
+     axis.title.x = element_text(size = 14, face = "bold", color = "black", family = "Palatino Linotype"),
+     axis.text.y = element_text(hjust = 1, size = 12, color = "black", family = "Palatino Linotype"),
+     axis.title.y = element_text(size = 14, face = "bold", color = "black", family = "Palatino Linotype"),
+     plot.title = element_text(size = 17, face = "bold", color = "black", family = "Palatino Linotype")
    )
  
- 
+pd
+
+# Save the plot with embedded fonts
+ggsave("Pig diseases.pdf",
+       plot = pd,
+       width = 9, 
+       height = 6,
+       units = "in",
+       device = cairo_pdf)  # Use Cairo PDF device which handles fonts better
  ############### Microbial Correlation Analysis ###############
  # Load required libraries
  library(tidyverse)
@@ -2241,7 +2299,7 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
    filter(Percentage >= 1)  # remove rare categories
  
  # Generate plot with abbreviations
- ggplot(summary_data, aes(x = fct_reorder(Antibiotic, Percentage, .desc = TRUE), 
+ anti<-ggplot(summary_data, aes(x = fct_reorder(Antibiotic, Percentage, .desc = TRUE), 
                           y = Percentage, 
                           fill = Antibiotic)) + 
    geom_col(width = 0.5) +
@@ -2250,17 +2308,27 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
                  width = 0.5, color = "black") +
    geom_text(aes(y = pmin(100, Percentage + SE) + 2, 
                  label = sprintf("%.1f%%", Percentage)),
-             size = 6, fontface = "bold", vjust = 0) +  
+             size = 5, fontface = "bold", vjust = 0, family = "Palatino Linotype") +  
    scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +  
-   labs(title = "Antibiotic Usage on Farms",
-        x = "Antibiotic",
-        y = "Percentage (%)") +
+   labs(x = "Antibiotic classes",
+        y = " Percentage of respondents using each antibiotic class (%)") +
    theme_classic() +
    theme(
-     plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
-     axis.title = element_text(size = 14, colour="black",face = "bold"),
-     axis.text = element_text(size = 12, color = "black",face = "bold"),
-     axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
+     plot.title = element_text(hjust = 0.5, size = 16, face = "bold", family = "Palatino Linotype"),
+     axis.title = element_text(size = 14, colour="black",face = "bold", family = "Palatino Linotype"),
+     axis.text.y = element_text(size = 12, color = "black",face = "bold", family = "Palatino Linotype"),
+     axis.text.x = element_text(colour="black",face="bold",angle = 45, hjust = 1, vjust = 1, size = 12, family = "Palatino Linotype")
    ) +
    guides(fill = "none")
+ 
+ anti
+ 
+ # Save the plot with embedded fonts
+ ggsave("Antibiptics.pdf",
+        plot = anti,
+        width = 9, 
+        height = 6,
+        units = "in",
+        device = cairo_pdf)  # Use Cairo PDF device which handles fonts better
+ #******************************************************
  
