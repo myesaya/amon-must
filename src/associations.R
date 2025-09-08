@@ -971,7 +971,7 @@ geom_text(aes(y = Percentage + SE + 2,
 mhm
 
 # Save the plot with embedded fonts
-ggsave("products_revised.pdf",
+ggsave("products_revised2.pdf",
        plot = mhm,
        width = 9, 
        height = 6,
@@ -1916,7 +1916,7 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
  cd<-ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
    geom_col(width = 0.4) +
    geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
-   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.1f%%", Percent)), 
+   geom_text(aes(y = Percent + SE + 2, label = sprintf("%.1f%%", Percent)), 
              size = 5, fontface = "bold", family = "Palatino Linotype") +
    scale_y_continuous(limits = c(0, 70), breaks = seq(0, 100, 20)) +
    labs(
@@ -2002,9 +2002,9 @@ ggplot(aes(x = fct_reorder(Source, Percentage, .desc = TRUE), y = Percentage, fi
 pd<- ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
    geom_col(width = 0.45) +
    geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
-   geom_text(aes(y = Percent + SE + 1, label = sprintf("%.1f%%", Percent)), 
+   geom_text(aes(y = Percent + SE + 2.5, label = sprintf("%.1f%%", Percent)), 
              size = 5, fontface = "bold", family = "Palatino Linotype") +
-   scale_y_continuous(limits = c(0, 85), breaks = seq(0, 100, 20)) +
+   scale_y_continuous(limits = c(0, 90), breaks = seq(0, 100, 20)) +
    labs(
     
      x = "Pig diseases",
@@ -2023,7 +2023,7 @@ pd<- ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fil
 pd
 
 # Save the plot with embedded fonts
-ggsave("Pig diseases.pdf",
+ggsave("Pig diseases2.pdf",
        plot = pd,
        width = 9, 
        height = 6,
@@ -2331,4 +2331,85 @@ ggsave("Pig diseases.pdf",
         units = "in",
         device = cairo_pdf)  # Use Cairo PDF device which handles fonts better
  #******************************************************
+ #*
+ # Install required packages if needed
+ if (!requireNamespace("officer", quietly = TRUE)) install.packages("officer")
+ if (!requireNamespace("rvg", quietly = TRUE)) install.packages("rvg")
+ 
+ library(officer)
+ library(rvg)
+ 
+ # Your existing code for creating the plot
+ where <- survey_df |> 
+   select(starts_with("disease_chicken"))
+ 
+ # Reshape to long format
+ where_long <- where |> 
+   pivot_longer(
+     cols = starts_with("disease_chicken"),
+     names_to = "Variable",
+     values_to = "Response"
+   )
+ 
+ # Total number of respondents
+ total_n <- nrow(where)  # assuming one row per respondent
+ 
+ # Summarize percentages and calculate SE
+ summary_where <- where_long %>%
+   filter(!is.na(Response)) %>%
+   group_by(Variable, Response) %>%
+   summarise(Count = n(), .groups = "drop") %>%
+   group_by(Variable) %>%
+   mutate(Percent = 100 * Count / sum(Count)) %>%
+   filter(Response == "1") %>%
+   ungroup() %>%
+   mutate(
+     SE = sqrt((Percent / 100) * (1 - Percent / 100) / total_n) * 100
+   )
+ 
+ where_long$Variable <- as.factor(where_long$Variable)  # Ensure Variable is a factor
+ levels(where_long$Variable)
+ 
+ # Rename the Variable names
+ summary_where <- summary_where |> 
+   mutate(Variable = fct_recode(Variable,
+                                "Cholera" = "disease_chicken_cholera",
+                                "Coryza" = "disease_chicken_coryza",
+                                "New Caste" = "disease_chicken_newcastle" ,
+                                "Worms" ="disease_chicken_worms",
+                                "Coccidiosis" = "disease_chicken_coccidiosis",
+                                "Infectious bursal" ="disease_chicken_infectious_bursal",
+                                
+                                " Parasites"="disease_chicken_parasites" ))
+ 
+ # Create the plot with increased spacing
+ cd <- ggplot(summary_where, aes(x = reorder(Variable, -Percent), y = Percent, fill = Variable)) +
+   geom_col(width = 0.4) +
+   geom_errorbar(aes(ymin = Percent - SE, ymax = Percent + SE), width = 0.2, color = "black") +
+   geom_text(aes(y = Percent + SE + 3, label = sprintf("%.1f%%", Percent)),  # Increased from +1 to +3
+             size = 5, fontface = "bold", family = "Palatino Linotype") +
+   scale_y_continuous(limits = c(0, 70), breaks = seq(0, 100, 20)) +
+   labs(
+     x = "Poultry diseases",
+     y = "Percentage of respondents using antibiotics (%)"
+   ) +
+   theme_classic() +
+   theme(
+     legend.position = "none",
+     axis.text.x = element_text(angle = 45, hjust = 1, size = 12, color = "black", family = "Palatino Linotype"),
+     axis.title.x = element_text(size = 14, face = "bold", color = "black", family = "Palatino Linotype"),
+     axis.text.y = element_text(hjust = 1, size = 12, color = "black", family = "Palatino Linotype"),
+     axis.title.y = element_text(size = 14, face = "bold", color = "black", family = "Palatino Linotype"),
+     plot.title = element_text(size = 17, face = "bold", color = "black", family = "Palatino Linotype")
+   )
+ 
+ # Create a new Word document
+ doc <- read_docx()
+ 
+ # Add the plot to the Word document
+ doc <- doc %>%
+   body_add_gg(value = cd, style = "centered", width = 9, height = 6)
+ 
+ # Save the Word document
+ print(doc, target = "Poultry_diseases_report.docx")
  

@@ -139,7 +139,9 @@ turkey<-final %>%
   mutate(Adjusted_p_value = sapply(Adjusted_p_value, format_p_value)) |> 
   gt() %>%
   tab_header(
-    title = "Significant Differences"
+    title = "Significant Difference
+    
+    s"
   ) |> 
   tab_footnote(
     footnote = "Significance codes: *** p < 0.001; ** p < 0.01; * p < 0.05", 
